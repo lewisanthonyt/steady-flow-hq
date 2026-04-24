@@ -1,0 +1,125 @@
+import { Link, useLocation } from "@tanstack/react-router";
+import {
+  LayoutDashboard,
+  Briefcase,
+  Users,
+  Receipt,
+  FileText,
+  Search,
+  Plus,
+  Bell,
+} from "lucide-react";
+import logo from "@/assets/steadyworks-logo.png";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+const nav = [
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/jobs", label: "Jobs", icon: Briefcase },
+  { to: "/customers", label: "Customers", icon: Users },
+  { to: "/finance", label: "Finance", icon: Receipt },
+  { to: "/quotes", label: "Quotes", icon: FileText },
+] as const;
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  const location = useLocation();
+
+  return (
+    <div className="flex min-h-screen bg-background">
+      {/* Sidebar */}
+      <aside className="hidden md:flex w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border sticky top-0 h-screen">
+        <div className="flex items-center gap-3 px-5 py-5 border-b border-sidebar-border">
+          <img src={logo} alt="Steady Works" className="h-10 w-10 object-contain" />
+          <div className="leading-tight">
+            <div className="font-bold text-sm tracking-tight">STEADY WORKS</div>
+            <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60">HQ Console</div>
+          </div>
+        </div>
+
+        <nav className="flex-1 px-3 py-4 space-y-1">
+          {nav.map((item) => {
+            const Icon = item.icon;
+            const active = location.pathname.startsWith(item.to);
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
+                  active
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+                    : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="px-4 py-4 border-t border-sidebar-border">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-full bg-sidebar-primary flex items-center justify-center text-sidebar-primary-foreground font-bold text-sm">
+              SW
+            </div>
+            <div className="leading-tight">
+              <div className="text-sm font-semibold">Boss</div>
+              <div className="text-xs text-sidebar-foreground/60">Owner</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top bar */}
+        <header className="sticky top-0 z-20 bg-background/80 backdrop-blur border-b border-border">
+          <div className="flex items-center gap-3 px-4 md:px-8 h-16">
+            <div className="md:hidden flex items-center gap-2">
+              <img src={logo} alt="Steady Works" className="h-8 w-8 object-contain" />
+              <span className="font-bold text-sm">STEADY WORKS</span>
+            </div>
+            <div className="hidden md:flex items-center gap-2 flex-1 max-w-md">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Search jobs, customers, quotes…" className="pl-9 bg-muted/50 border-transparent" />
+              </div>
+            </div>
+            <div className="ml-auto flex items-center gap-2">
+              <Button variant="ghost" size="icon" aria-label="Notifications">
+                <Bell className="h-4 w-4" />
+              </Button>
+              <Button className="gap-2 shadow-sm">
+                <Plus className="h-4 w-4" /> New Job
+              </Button>
+            </div>
+          </div>
+          {/* Mobile nav */}
+          <nav className="md:hidden flex items-center gap-1 px-2 pb-2 overflow-x-auto">
+            {nav.map((item) => {
+              const Icon = item.icon;
+              const active = location.pathname.startsWith(item.to);
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap",
+                    active ? "bg-secondary text-secondary-foreground" : "text-muted-foreground hover:bg-muted",
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </header>
+
+        <main className="flex-1 px-4 md:px-8 py-6 md:py-8">{children}</main>
+      </div>
+    </div>
+  );
+}
