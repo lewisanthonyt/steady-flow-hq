@@ -39,7 +39,12 @@ function CustomersPage() {
             <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
             <p className="text-muted-foreground mt-1">{customers.length} contacts in your CRM.</p>
           </div>
-          <Button className="gap-2"><Plus className="h-4 w-4" /> Add Customer</Button>
+          <Button
+            className="gap-2"
+            onClick={() => toast.success("New customer", { description: "Add Customer form (demo)." })}
+          >
+            <Plus className="h-4 w-4" /> Add Customer
+          </Button>
         </div>
 
         <div className="grid lg:grid-cols-[360px_1fr] gap-4">
