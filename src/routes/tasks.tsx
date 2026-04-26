@@ -53,7 +53,26 @@ function TasksPage() {
             <h1 className="text-3xl font-bold tracking-tight">Tasks</h1>
             <p className="text-muted-foreground mt-1">Your daily to-dos, reminders and team workload.</p>
           </div>
-          <Button className="gap-2"><Plus className="h-4 w-4" /> New Task</Button>
+          <Button
+            className="gap-2"
+            onClick={() => {
+              const title = window.prompt("New task title?");
+              if (!title?.trim()) return;
+              const newTask: Task = {
+                id: `t-${Date.now()}`,
+                title: title.trim(),
+                priority: "Medium",
+                status: "To Do",
+                assignedTo: assignee === "All" ? "Boss" : assignee,
+                dueDate: todayISO(),
+                repeat: "None",
+              };
+              setItems((prev) => [newTask, ...prev]);
+              toast.success("Task added", { description: title.trim() });
+            }}
+          >
+            <Plus className="h-4 w-4" /> New Task
+          </Button>
         </div>
 
         {/* Stat cards */}
