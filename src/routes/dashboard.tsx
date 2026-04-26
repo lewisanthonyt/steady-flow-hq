@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
   Area,
@@ -7,8 +7,6 @@ import {
   BarChart,
   CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -24,6 +22,10 @@ import {
   TrendingDown,
   Users,
   Target,
+  Sparkles,
+  Phone,
+  ListTodo,
+  CalendarDays,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,6 +40,8 @@ import {
   gbp,
   statusColor,
   STATUS_ORDER,
+  tasks,
+  priorityColor,
 } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/dashboard")({
@@ -123,7 +127,10 @@ function DashboardPage() {
           </Badge>
         </div>
 
-        {/* KPI grid */}
+        {/* Today's Focus */}
+        <TodaysFocus />
+
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Kpi title="Money In (Apr)" value={gbp(thisMonth.revenue)} icon={PoundSterling} trend="up" trendLabel="+18% vs Mar" accent />
           <Kpi title="Money Out (Apr)" value={gbp(thisMonth.expenses)} icon={TrendingDown} trend="down" trendLabel="-5% vs Mar" />
@@ -279,5 +286,86 @@ function DashboardPage() {
         </Card>
       </div>
     </AppShell>
+  );
+}
+
+function TodaysFocus() {
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const todayJobs = jobs.filter((j) => j.date === todayISO);
+  const urgentTasks = tasks.filter((t) => (t.priority === "Urgent" || t.priority === "High") && t.status !== "Completed" && t.status !== "Cancelled").slice(0, 4);
+  const callsToMake = tasks.filter((t) => t.title.toLowerCase().includes("call") || t.title.toLowerCase().includes("chase")).slice(0, 3);
+  const paymentsDue = jobs.filter((j) => j.status === "Invoiced");
+  const meetings = tasks.filter((t) => t.title.toLowerCase().includes("meeting") || t.title.toLowerCase().includes("staff"));
+
+  return (
+    <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-background overflow-hidden">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-base flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-primary" />
+          Today's Focus
+          <Badge variant="outline" className="ml-2 font-normal">{new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "short" })}</Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-3">
+          <FocusCol icon={Briefcase} label="Today's Jobs" count={todayJobs.length} to="/jobs">
+            {todayJobs.slice(0, 3).map((j) => (
+              <li key={j.id} className="truncate"><span className="font-semibold">{j.time}</span> · {j.customer}</li>
+            ))}
+            {todayJobs.length === 0 && <li className="text-muted-foreground">Nothing booked.</li>}
+          </FocusCol>
+          <FocusCol icon={ListTodo} label="Urgent Tasks" count={urgentTasks.length} to="/tasks">
+            {urgentTasks.map((t) => (
+              <li key={t.id} className="flex items-center gap-1.5 truncate">
+                <span className={`text-[9px] px-1 py-0.5 rounded font-bold shrink-0 ${priorityColor(t.priority)}`}>{t.priority[0]}</span>
+                <span className="truncate">{t.title}</span>
+              </li>
+            ))}
+            {urgentTasks.length === 0 && <li className="text-muted-foreground">All clear.</li>}
+          </FocusCol>
+          <FocusCol icon={Phone} label="Calls To Make" count={callsToMake.length} to="/tasks">
+            {callsToMake.map((t) => (
+              <li key={t.id} className="truncate">{t.title.replace(/^Call\s+/i, "")}</li>
+            ))}
+            {callsToMake.length === 0 && <li className="text-muted-foreground">No calls queued.</li>}
+          </FocusCol>
+          <FocusCol icon={PoundSterling} label="Payments Due" count={paymentsDue.length} to="/finance">
+            {paymentsDue.slice(0, 3).map((j) => (
+              <li key={j.id} className="truncate">{j.customer} · <span className="font-semibold">{gbp(j.finalInvoice)}</span></li>
+            ))}
+            {paymentsDue.length === 0 && <li className="text-muted-foreground">All paid up.</li>}
+          </FocusCol>
+          <FocusCol icon={CalendarDays} label="Meetings" count={meetings.length} to="/calendar">
+            {meetings.slice(0, 3).map((t) => (
+              <li key={t.id} className="truncate">{t.title} {t.dueTime && <span className="text-muted-foreground">· {t.dueTime}</span>}</li>
+            ))}
+            {meetings.length === 0 && <li className="text-muted-foreground">None today.</li>}
+          </FocusCol>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function FocusCol({
+  icon: Icon, label, count, to, children,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  count: number;
+  to: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link to={to} className="block rounded-lg border bg-card p-3 hover:border-primary hover:shadow-md transition-all">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="h-7 w-7 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+          <Icon className="h-3.5 w-3.5" />
+        </div>
+        <div className="text-[11px] uppercase tracking-wider font-bold text-muted-foreground flex-1">{label}</div>
+        <div className="text-sm font-bold">{count}</div>
+      </div>
+      <ul className="text-xs space-y-1">{children}</ul>
+    </Link>
   );
 }
