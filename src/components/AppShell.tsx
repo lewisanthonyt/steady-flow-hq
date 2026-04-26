@@ -58,7 +58,17 @@ const quickAdd = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const onSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    toast.info(`Searching for "${searchQuery}"…`, { description: "Try Customers or Jobs for full results." });
+    navigate({ to: "/customers" });
+    setSearchQuery("");
+  };
 
   return (
     <div className="flex min-h-screen bg-background">
