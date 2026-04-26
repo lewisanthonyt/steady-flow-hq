@@ -101,9 +101,22 @@ function CustomersPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="gap-2"><Phone className="h-3.5 w-3.5" /> Call</Button>
-                    <Button variant="outline" size="sm" className="gap-2"><Mail className="h-3.5 w-3.5" /> Email</Button>
-                    <Button size="sm" className="gap-2"><FileText className="h-3.5 w-3.5" /> New Quote</Button>
+                    <Button asChild variant="outline" size="sm" className="gap-2">
+                      <a href={`tel:${selected.phone}`}><Phone className="h-3.5 w-3.5" /> Call</a>
+                    </Button>
+                    <Button asChild variant="outline" size="sm" className="gap-2">
+                      <a href={`mailto:${selected.email}`}><Mail className="h-3.5 w-3.5" /> Email</a>
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => {
+                        toast.success(`Starting quote for ${selected.name}`);
+                        navigate({ to: "/quotes" });
+                      }}
+                    >
+                      <FileText className="h-3.5 w-3.5" /> New Quote
+                    </Button>
                   </div>
                 </div>
 
