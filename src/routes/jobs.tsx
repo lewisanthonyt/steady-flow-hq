@@ -30,7 +30,12 @@ function JobsPage() {
             <h1 className="text-3xl font-bold tracking-tight">Jobs Board</h1>
             <p className="text-muted-foreground mt-1">{jobs.length} jobs across the pipeline.</p>
           </div>
-          <Button className="gap-2"><Plus className="h-4 w-4" /> New Job</Button>
+          <Button
+            className="gap-2"
+            onClick={() => toast.success("New Job started", { description: "Opens the job builder (demo)." })}
+          >
+            <Plus className="h-4 w-4" /> New Job
+          </Button>
         </div>
 
         <Tabs value={view} onValueChange={(v) => setView(v as typeof view)}>
