@@ -296,6 +296,95 @@ export function buildCalendarItems(): CalendarItem[] {
   return items;
 }
 
+// ============ Marketing ============
+export type LeadSource =
+  | "Facebook Ads"
+  | "Google Ads"
+  | "Instagram"
+  | "Leaflets"
+  | "Referral"
+  | "Repeat Customer"
+  | "Organic"
+  | "Website"
+  | "Cold Outreach"
+  | "Local Directory"
+  | "Other";
+
+export type LeadStatus = "Pending" | "Won" | "Lost";
+
+export interface MarketingSpend {
+  id: string;
+  date: string;
+  source: LeadSource;
+  campaign: string;
+  amount: number;
+  notes?: string;
+}
+
+export interface Lead {
+  id: string;
+  name: string;
+  source: LeadSource;
+  date: string;
+  status: LeadStatus;
+  jobId?: string;
+  revenue: number;
+}
+
+export const marketingSpend: MarketingSpend[] = [
+  { id: "ms1", date: iso(-2), source: "Facebook Ads", campaign: "April Boiler Push", amount: 180, notes: "New creative — boiler service" },
+  { id: "ms2", date: iso(-5), source: "Facebook Ads", campaign: "April Boiler Push", amount: 220 },
+  { id: "ms3", date: iso(-8), source: "Facebook Ads", campaign: "Local Awareness", amount: 60 },
+  { id: "ms4", date: iso(-3), source: "Google Ads", campaign: "Emergency Plumber MCR", amount: 340, notes: "High-intent keywords" },
+  { id: "ms5", date: iso(-9), source: "Google Ads", campaign: "Boiler Repair", amount: 280 },
+  { id: "ms6", date: iso(-15), source: "Google Ads", campaign: "Emergency Plumber MCR", amount: 410 },
+  { id: "ms7", date: iso(-6), source: "Instagram", campaign: "Bathroom Reels", amount: 90 },
+  { id: "ms8", date: iso(-12), source: "Leaflets", campaign: "Bolton 1k Drop", amount: 150, notes: "1,000 leaflets — Bolton estates" },
+  { id: "ms9", date: iso(-25), source: "Leaflets", campaign: "Salford Drop", amount: 140 },
+  { id: "ms10", date: iso(-4), source: "Local Directory", campaign: "Checkatrade", amount: 65 },
+  { id: "ms11", date: iso(-20), source: "Local Directory", campaign: "Yell.com", amount: 80, notes: "Underperforming" },
+  { id: "ms12", date: iso(-7), source: "Referral", campaign: "Customer referral reward", amount: 50 },
+];
+
+export const leads: Lead[] = [
+  // Facebook Ads — decent
+  { id: "l1", name: "Karen Whittle", source: "Facebook Ads", date: iso(-1), status: "Won", jobId: "j1", revenue: 120 },
+  { id: "l2", name: "Tom Briggs", source: "Facebook Ads", date: iso(-3), status: "Won", revenue: 540 },
+  { id: "l3", name: "Liam Foster", source: "Facebook Ads", date: iso(-4), status: "Lost", revenue: 0 },
+  { id: "l4", name: "Hannah Reid", source: "Facebook Ads", date: iso(-6), status: "Pending", revenue: 0 },
+  { id: "l5", name: "Joe Patel", source: "Facebook Ads", date: iso(-7), status: "Lost", revenue: 0 },
+  { id: "l6", name: "Sara Doyle", source: "Facebook Ads", date: iso(-9), status: "Won", revenue: 380 },
+  // Google Ads — strong
+  { id: "l7", name: "Marcus Bennett", source: "Google Ads", date: iso(-3), status: "Won", jobId: "j7", revenue: 320 },
+  { id: "l8", name: "Aisha Khan", source: "Google Ads", date: iso(-2), status: "Won", jobId: "j6", revenue: 140 },
+  { id: "l9", name: "Greg Hammond", source: "Google Ads", date: iso(-5), status: "Won", revenue: 890 },
+  { id: "l10", name: "Nina Clarke", source: "Google Ads", date: iso(-8), status: "Pending", revenue: 0 },
+  { id: "l11", name: "Owen Pritchard", source: "Google Ads", date: iso(-10), status: "Won", revenue: 620 },
+  { id: "l12", name: "Eve Martinez", source: "Google Ads", date: iso(-14), status: "Lost", revenue: 0 },
+  // Referral — gold
+  { id: "l13", name: "Daniel Wright", source: "Referral", date: iso(-12), status: "Won", jobId: "j2", revenue: 4800 },
+  { id: "l14", name: "Robert McAllister", source: "Referral", date: iso(-15), status: "Won", jobId: "j4", revenue: 620 },
+  { id: "l15", name: "Beth Sallow", source: "Referral", date: iso(-6), status: "Won", revenue: 890 },
+  // Repeat
+  { id: "l16", name: "Margaret Thompson", source: "Repeat Customer", date: iso(-7), status: "Won", jobId: "j10", revenue: 160 },
+  { id: "l17", name: "James O'Connor", source: "Repeat Customer", date: iso(-10), status: "Won", jobId: "j12", revenue: 380 },
+  // Organic / Website
+  { id: "l18", name: "Priya Shah", source: "Organic", date: iso(-1), status: "Won", jobId: "j5", revenue: 95 },
+  { id: "l19", name: "Sophie Edwards", source: "Website", date: iso(-2), status: "Pending", revenue: 0 },
+  { id: "l20", name: "Adam Black", source: "Organic", date: iso(-4), status: "Won", revenue: 240 },
+  // Instagram — meh
+  { id: "l21", name: "Chloe Wells", source: "Instagram", date: iso(-6), status: "Pending", revenue: 0 },
+  { id: "l22", name: "Ryan O'Neil", source: "Instagram", date: iso(-8), status: "Lost", revenue: 0 },
+  // Leaflets — poor
+  { id: "l23", name: "Pat Holden", source: "Leaflets", date: iso(-10), status: "Lost", revenue: 0 },
+  { id: "l24", name: "Bev Clarke", source: "Leaflets", date: iso(-22), status: "Won", revenue: 180 },
+  // Local Directory
+  { id: "l25", name: "Frank Riley", source: "Local Directory", date: iso(-5), status: "Won", revenue: 290 },
+  { id: "l26", name: "Janet Brooks", source: "Local Directory", date: iso(-18), status: "Lost", revenue: 0 },
+  // Cold outreach
+  { id: "l27", name: "Mike Jardine", source: "Cold Outreach", date: iso(-14), status: "Lost", revenue: 0 },
+];
+
 export function calendarTypeColor(t: CalendarItem["type"]): string {
   switch (t) {
     case "Job": return "bg-primary text-primary-foreground";
