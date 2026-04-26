@@ -127,7 +127,10 @@ function DashboardPage() {
           </Badge>
         </div>
 
-        {/* KPI grid */}
+        {/* Today's Focus */}
+        <TodaysFocus />
+
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Kpi title="Money In (Apr)" value={gbp(thisMonth.revenue)} icon={PoundSterling} trend="up" trendLabel="+18% vs Mar" accent />
           <Kpi title="Money Out (Apr)" value={gbp(thisMonth.expenses)} icon={TrendingDown} trend="down" trendLabel="-5% vs Mar" />
