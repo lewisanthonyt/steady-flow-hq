@@ -1,4 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   LayoutDashboard,
   Briefcase,
@@ -8,22 +9,48 @@ import {
   Search,
   Plus,
   Bell,
+  ListTodo,
+  CalendarDays,
+  UserPlus,
+  Bell as BellIcon,
+  HardHat,
 } from "lucide-react";
 import logo from "@/assets/steadyworks-logo.png";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/jobs", label: "Jobs", icon: Briefcase },
+  { to: "/tasks", label: "Tasks", icon: ListTodo },
+  { to: "/calendar", label: "Calendar", icon: CalendarDays },
   { to: "/customers", label: "Customers", icon: Users },
   { to: "/finance", label: "Finance", icon: Receipt },
   { to: "/quotes", label: "Quotes", icon: FileText },
 ] as const;
 
+const quickAdd = [
+  { label: "New Job", icon: Briefcase, to: "/jobs", desc: "Schedule work for a customer" },
+  { label: "New Task", icon: ListTodo, to: "/tasks", desc: "Add a to-do or reminder" },
+  { label: "New Quote", icon: FileText, to: "/quotes", desc: "Build & send a quote" },
+  { label: "New Customer", icon: UserPlus, to: "/customers", desc: "Add to your CRM" },
+  { label: "New Invoice", icon: Receipt, to: "/finance", desc: "Bill a completed job" },
+  { label: "New Contractor", icon: HardHat, to: "/customers", desc: "Add a subcontractor" },
+  { label: "New Reminder", icon: BellIcon, to: "/tasks", desc: "Set a calendar reminder" },
+] as const;
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -37,7 +64,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {nav.map((item) => {
             const Icon = item.icon;
             const active = location.pathname.startsWith(item.to);
@@ -91,9 +118,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Button variant="ghost" size="icon" aria-label="Notifications">
                 <Bell className="h-4 w-4" />
               </Button>
-              <Button className="gap-2 shadow-sm">
-                <Plus className="h-4 w-4" /> New Job
-              </Button>
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button className="gap-2 shadow-sm">
+                    <Plus className="h-4 w-4" /> Quick Add
+                  </Button>
+                </DialogTrigger>
+                <QuickAddContent onPick={() => setOpen(false)} />
+              </Dialog>
             </div>
           </div>
           {/* Mobile nav */}
@@ -120,6 +152,52 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <main className="flex-1 px-4 md:px-8 py-6 md:py-8">{children}</main>
       </div>
+
+      {/* Floating Quick Add (mobile) */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button
+            size="icon"
+            className="md:hidden fixed bottom-5 right-5 z-30 h-14 w-14 rounded-full shadow-2xl"
+            aria-label="Quick Add"
+          >
+            <Plus className="h-6 w-6" />
+          </Button>
+        </DialogTrigger>
+        <QuickAddContent onPick={() => setOpen(false)} />
+      </Dialog>
     </div>
+  );
+}
+
+function QuickAddContent({ onPick }: { onPick: () => void }) {
+  return (
+    <DialogContent className="max-w-lg">
+      <DialogHeader>
+        <DialogTitle>Quick Add</DialogTitle>
+        <DialogDescription>Create something new in one tap.</DialogDescription>
+      </DialogHeader>
+      <div className="grid grid-cols-2 gap-2 mt-2">
+        {quickAdd.map((q) => {
+          const Icon = q.icon;
+          return (
+            <Link
+              key={q.label}
+              to={q.to}
+              onClick={onPick}
+              className="group flex items-start gap-3 p-3 rounded-lg border bg-card hover:border-primary hover:bg-primary/5 transition-colors"
+            >
+              <div className="h-9 w-9 rounded-md bg-primary text-primary-foreground flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                <Icon className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold">{q.label}</div>
+                <div className="text-[11px] text-muted-foreground leading-tight">{q.desc}</div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </DialogContent>
   );
 }
