@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Copy, FileText, Mail, Plus, Send } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -138,8 +139,20 @@ function QuoteBuilder() {
             <Textarea id="terms" rows={3} value={form.terms} onChange={(e) => setForm({ ...form, terms: e.target.value })} />
           </div>
           <div className="flex gap-2">
-            <Button className="gap-2 flex-1"><Send className="h-4 w-4" /> Send Quote</Button>
-            <Button variant="outline">Save Draft</Button>
+            <Button
+              className="gap-2 flex-1"
+              onClick={() => {
+                if (!form.customer.trim() || !form.work.trim()) {
+                  toast.error("Add a customer and work description first.");
+                  return;
+                }
+                toast.success(`Quote sent to ${form.customer}`, { description: `${gbp(form.price)} · expires in ${form.expiry} days` });
+                setForm({ customer: "", work: "", price: 500, terms: form.terms, expiry: form.expiry });
+              }}
+            >
+              <Send className="h-4 w-4" /> Send Quote
+            </Button>
+            <Button variant="outline" onClick={() => toast.success("Draft saved.")}>Save Draft</Button>
           </div>
         </CardContent>
       </Card>
@@ -197,7 +210,19 @@ function TemplateLibrary() {
                 <CardTitle className="text-base">{t.name}</CardTitle>
                 <p className="text-xs text-muted-foreground mt-1">{t.subject}</p>
               </div>
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(`${t.subject}\n\n${t.body}`);
+                    toast.success("Template copied to clipboard");
+                  } catch {
+                    toast.error("Couldn't copy. Try again.");
+                  }
+                }}
+              >
                 <Copy className="h-3.5 w-3.5" /> Copy
               </Button>
             </div>

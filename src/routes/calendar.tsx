@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import { ChevronLeft, ChevronRight, CalendarDays, ExternalLink } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,7 +38,15 @@ function CalendarPage() {
             <h1 className="text-3xl font-bold tracking-tight">Master Calendar</h1>
             <p className="text-muted-foreground mt-1">Jobs, tasks, quotes, invoices and meetings — one view.</p>
           </div>
-          <Button variant="outline" className="gap-2">
+          <Button
+            variant="outline"
+            className="gap-2"
+            onClick={() =>
+              toast.info("Google Calendar sync", {
+                description: "Connect Lovable Cloud to enable two-way sync.",
+              })
+            }
+          >
             <ExternalLink className="h-4 w-4" /> Connect Google Calendar
           </Button>
         </div>

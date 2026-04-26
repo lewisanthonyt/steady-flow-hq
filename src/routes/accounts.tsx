@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, useRef } from "react";
+import { toast } from "sonner";
 import {
   Area,
   AreaChart,
@@ -1112,7 +1113,12 @@ function SnapshotsPanel({
         <p className="text-sm text-muted-foreground">
           Beautiful at-a-glance cards — screenshot for meetings, partners or your accountant.
         </p>
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-2"
+          onClick={() => toast.success("Exporting all snapshots…", { description: "PDF bundle generation (demo)." })}
+        >
           <Download className="h-3.5 w-3.5" /> Export all
         </Button>
       </div>
@@ -1242,10 +1248,24 @@ function SnapCard({
         </div>
       </div>
       <CardContent className="p-3 flex items-center justify-end gap-2 bg-card">
-        <Button size="sm" variant="ghost" className="gap-1.5 text-xs">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="gap-1.5 text-xs"
+          onClick={() => toast.success(`Screenshot ready: ${title}`, { description: "Image saved to your downloads (demo)." })}
+        >
           <Camera className="h-3.5 w-3.5" /> Screenshot
         </Button>
-        <Button size="sm" variant="outline" className="gap-1.5 text-xs">
+        <Button
+          size="sm"
+          variant="outline"
+          className="gap-1.5 text-xs"
+          onClick={() => {
+            const text = `${title}\n${stats.map((s) => `${s.label}: ${s.value}`).join("\n")}`;
+            navigator.clipboard?.writeText(text);
+            toast.success("Snapshot copied to clipboard");
+          }}
+        >
           <Download className="h-3.5 w-3.5" /> Export
         </Button>
       </CardContent>

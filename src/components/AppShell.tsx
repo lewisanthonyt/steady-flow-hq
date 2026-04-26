@@ -1,5 +1,6 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   LayoutDashboard,
   Briefcase,
@@ -28,6 +29,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -52,7 +58,17 @@ const quickAdd = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const onSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    toast.info(`Searching for "${searchQuery}"…`, { description: "Try Customers or Jobs for full results." });
+    navigate({ to: "/customers" });
+    setSearchQuery("");
+  };
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -110,16 +126,55 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <img src={logo} alt="Steady Works" className="h-8 w-8 object-contain" />
               <span className="font-bold text-sm">STEADY WORKS</span>
             </div>
-            <div className="hidden md:flex items-center gap-2 flex-1 max-w-md">
+            <form onSubmit={onSearch} className="hidden md:flex items-center gap-2 flex-1 max-w-md">
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search jobs, customers, quotes…" className="pl-9 bg-muted/50 border-transparent" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search jobs, customers, quotes…"
+                  className="pl-9 bg-muted/50 border-transparent"
+                />
               </div>
-            </div>
+            </form>
             <div className="ml-auto flex items-center gap-2">
-              <Button variant="ghost" size="icon" aria-label="Notifications">
-                <Bell className="h-4 w-4" />
-              </Button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="icon" aria-label="Notifications" className="relative">
+                    <Bell className="h-4 w-4" />
+                    <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="end" className="w-80 p-0">
+                  <div className="px-4 py-3 border-b">
+                    <div className="font-semibold text-sm">Notifications</div>
+                    <div className="text-xs text-muted-foreground">3 new today</div>
+                  </div>
+                  <div className="divide-y max-h-80 overflow-y-auto">
+                    {[
+                      { t: "Quote SW-1043 accepted", d: "Margaret Thompson · 2h ago", icon: FileText },
+                      { t: "Invoice paid · £820", d: "John Carter · 5h ago", icon: Receipt },
+                      { t: "New booking: Boiler service", d: "Tomorrow 09:00 · Bolton", icon: Briefcase },
+                    ].map((n, i) => (
+                      <div key={i} className="px-4 py-3 flex items-start gap-3 hover:bg-muted/40 cursor-pointer">
+                        <div className="h-8 w-8 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                          <n.icon className="h-4 w-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium leading-tight">{n.t}</div>
+                          <div className="text-xs text-muted-foreground mt-0.5">{n.d}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-2 border-t">
+                    <Button variant="ghost" size="sm" className="w-full" onClick={() => toast.success("All caught up.")}>
+                      Mark all as read
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
               <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                   <Button className="gap-2 shadow-sm">

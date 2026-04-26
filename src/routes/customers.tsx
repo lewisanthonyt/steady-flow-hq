@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Phone, Mail, MapPin, FileText, Plus, Search } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/customers")({
 });
 
 function CustomersPage() {
+  const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState(customers[0].id);
   const [query, setQuery] = useState("");
 
@@ -37,7 +39,12 @@ function CustomersPage() {
             <h1 className="text-3xl font-bold tracking-tight">Customers</h1>
             <p className="text-muted-foreground mt-1">{customers.length} contacts in your CRM.</p>
           </div>
-          <Button className="gap-2"><Plus className="h-4 w-4" /> Add Customer</Button>
+          <Button
+            className="gap-2"
+            onClick={() => toast.success("New customer", { description: "Add Customer form (demo)." })}
+          >
+            <Plus className="h-4 w-4" /> Add Customer
+          </Button>
         </div>
 
         <div className="grid lg:grid-cols-[360px_1fr] gap-4">
@@ -94,9 +101,22 @@ function CustomersPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="gap-2"><Phone className="h-3.5 w-3.5" /> Call</Button>
-                    <Button variant="outline" size="sm" className="gap-2"><Mail className="h-3.5 w-3.5" /> Email</Button>
-                    <Button size="sm" className="gap-2"><FileText className="h-3.5 w-3.5" /> New Quote</Button>
+                    <Button asChild variant="outline" size="sm" className="gap-2">
+                      <a href={`tel:${selected.phone}`}><Phone className="h-3.5 w-3.5" /> Call</a>
+                    </Button>
+                    <Button asChild variant="outline" size="sm" className="gap-2">
+                      <a href={`mailto:${selected.email}`}><Mail className="h-3.5 w-3.5" /> Email</a>
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => {
+                        toast.success(`Starting quote for ${selected.name}`);
+                        navigate({ to: "/quotes" });
+                      }}
+                    >
+                      <FileText className="h-3.5 w-3.5" /> New Quote
+                    </Button>
                   </div>
                 </div>
 

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { toast } from "sonner";
 import {
   Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer,
   Tooltip, XAxis, YAxis, Line, LineChart,
@@ -51,7 +52,12 @@ function FinancePage() {
             <h1 className="text-3xl font-bold tracking-tight">Finance</h1>
             <p className="text-muted-foreground mt-1">Income, expenses and outstanding payments.</p>
           </div>
-          <Button className="gap-2"><Plus className="h-4 w-4" /> Log Expense</Button>
+          <Button
+            className="gap-2"
+            onClick={() => toast.success("Log Expense", { description: "Expense form (demo)." })}
+          >
+            <Plus className="h-4 w-4" /> Log Expense
+          </Button>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
