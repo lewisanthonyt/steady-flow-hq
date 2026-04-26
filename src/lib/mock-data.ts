@@ -207,3 +207,102 @@ Steady Works`,
 export function gbp(n: number): string {
   return new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP", maximumFractionDigits: 0 }).format(n);
 }
+
+// ============ Tasks ============
+export type TaskPriority = "Low" | "Medium" | "High" | "Urgent";
+export type TaskStatus = "To Do" | "In Progress" | "Waiting" | "Completed" | "Cancelled";
+
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  priority: TaskPriority;
+  assignedTo: string;
+  dueDate: string; // ISO date
+  dueTime?: string;
+  repeat?: "None" | "Daily" | "Weekly" | "Monthly";
+  relatedTo?: string;
+  status: TaskStatus;
+  notes?: string;
+}
+
+export const TASK_STATUSES: TaskStatus[] = ["To Do", "In Progress", "Waiting", "Completed", "Cancelled"];
+
+export const tasks: Task[] = [
+  { id: "t1", title: "Call Margaret back re: boiler service", priority: "High", assignedTo: "Boss", dueDate: iso(0), dueTime: "10:00", status: "To Do", relatedTo: "Margaret Thompson", repeat: "None" },
+  { id: "t2", title: "Send quote to Sophie Edwards (combi boiler)", priority: "Urgent", assignedTo: "Boss", dueDate: iso(0), dueTime: "14:00", status: "In Progress", relatedTo: "SW-1043", repeat: "None" },
+  { id: "t3", title: "Order materials — Wright bathroom refit", description: "Tiles, adhesive, grout, suite", priority: "High", assignedTo: "Tom", dueDate: iso(1), dueTime: "08:00", status: "To Do", relatedTo: "Daniel Wright", repeat: "None" },
+  { id: "t4", title: "Chase unpaid invoice — INV-1029", priority: "Medium", assignedTo: "Boss", dueDate: iso(0), status: "Waiting", repeat: "None" },
+  { id: "t5", title: "Renew public liability insurance", priority: "Urgent", assignedTo: "Boss", dueDate: iso(7), status: "To Do", repeat: "None" },
+  { id: "t6", title: "Book scaffold team — Wigan job", priority: "High", assignedTo: "Jay", dueDate: iso(2), dueTime: "09:00", status: "To Do", relatedTo: "Robert McAllister", repeat: "None" },
+  { id: "t7", title: "Staff meeting Friday", description: "Weekly catch-up + jobs review", priority: "Medium", assignedTo: "All", dueDate: iso(((5 - today.getDay()) + 7) % 7 || 7), dueTime: "16:00", status: "To Do", repeat: "Weekly" },
+  { id: "t8", title: "Vehicle MOT reminder — van", priority: "Medium", assignedTo: "Boss", dueDate: iso(14), status: "To Do", repeat: "None" },
+  { id: "t9", title: "Update website portfolio photos", priority: "Low", assignedTo: "Boss", dueDate: iso(10), status: "To Do", repeat: "None" },
+  { id: "t10", title: "Reply to Facebook enquiries", priority: "Medium", assignedTo: "Boss", dueDate: iso(0), dueTime: "17:00", status: "To Do", repeat: "Daily" },
+  { id: "t11", title: "Confirm tomorrow's bookings with customers", priority: "High", assignedTo: "Boss", dueDate: iso(0), dueTime: "16:30", status: "In Progress", repeat: "Daily" },
+  { id: "t12", title: "Pay supplier — Plumb Center", priority: "Medium", assignedTo: "Boss", dueDate: iso(-1), status: "Completed", repeat: "None" },
+  { id: "t13", title: "Tidy van + restock consumables", priority: "Low", assignedTo: "Jay", dueDate: iso(-1), status: "Completed", repeat: "Weekly" },
+  { id: "t14", title: "Quote follow-up — McAllister power flush", priority: "Medium", assignedTo: "Boss", dueDate: iso(1), status: "To Do", relatedTo: "SW-1041", repeat: "None" },
+];
+
+export function priorityColor(p: TaskPriority): string {
+  switch (p) {
+    case "Low": return "bg-muted text-muted-foreground border";
+    case "Medium": return "bg-secondary text-secondary-foreground border";
+    case "High": return "bg-warning/20 text-foreground border border-warning/40";
+    case "Urgent": return "bg-destructive text-destructive-foreground";
+  }
+}
+
+export function taskStatusColor(s: TaskStatus): string {
+  switch (s) {
+    case "To Do": return "bg-muted text-foreground";
+    case "In Progress": return "bg-primary text-primary-foreground";
+    case "Waiting": return "bg-warning/20 text-foreground border border-warning/40";
+    case "Completed": return "bg-success text-success-foreground";
+    case "Cancelled": return "bg-muted text-muted-foreground line-through";
+  }
+}
+
+// Unified calendar feed
+export interface CalendarItem {
+  id: string;
+  date: string; // ISO yyyy-mm-dd
+  time?: string;
+  title: string;
+  subtitle?: string;
+  type: "Job" | "Task" | "Quote" | "Invoice" | "Meeting" | "Compliance";
+}
+
+export function buildCalendarItems(): CalendarItem[] {
+  const items: CalendarItem[] = [];
+  jobs.forEach((j) => items.push({
+    id: `cj-${j.id}`, date: j.date, time: j.time,
+    title: `${j.jobType} — ${j.customer}`, subtitle: j.address, type: "Job",
+  }));
+  tasks.forEach((t) => items.push({
+    id: `ct-${t.id}`, date: t.dueDate, time: t.dueTime,
+    title: t.title, subtitle: t.assignedTo, type: "Task",
+  }));
+  quotes.filter(q => q.status === "Sent" || q.status === "Draft").forEach((q) => items.push({
+    id: `cq-${q.id}`, date: q.expiry,
+    title: `Quote expires — ${q.number}`, subtitle: q.customer, type: "Quote",
+  }));
+  // Pretend invoices due soon
+  items.push({ id: "ci-1", date: iso(2), title: "Invoice INV-1029 due", subtitle: "James O'Connor — £180", type: "Invoice" });
+  items.push({ id: "ci-2", date: iso(5), title: "Invoice INV-1031 due", subtitle: "Margaret Thompson — £120", type: "Invoice" });
+  items.push({ id: "cm-1", date: iso(((5 - today.getDay()) + 7) % 7 || 7), time: "16:00", title: "Staff meeting", subtitle: "Weekly catch-up", type: "Meeting" });
+  items.push({ id: "cc-1", date: iso(7), title: "Public liability renewal", subtitle: "Compliance", type: "Compliance" });
+  return items;
+}
+
+export function calendarTypeColor(t: CalendarItem["type"]): string {
+  switch (t) {
+    case "Job": return "bg-primary text-primary-foreground";
+    case "Task": return "bg-secondary text-secondary-foreground border";
+    case "Quote": return "bg-warning/20 text-foreground border border-warning/40";
+    case "Invoice": return "bg-destructive/15 text-destructive border border-destructive/30";
+    case "Meeting": return "bg-success/15 text-success border border-success/30";
+    case "Compliance": return "bg-muted text-foreground border";
+  }
+}
