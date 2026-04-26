@@ -1113,7 +1113,12 @@ function SnapshotsPanel({
         <p className="text-sm text-muted-foreground">
           Beautiful at-a-glance cards — screenshot for meetings, partners or your accountant.
         </p>
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-2"
+          onClick={() => toast.success("Exporting all snapshots…", { description: "PDF bundle generation (demo)." })}
+        >
           <Download className="h-3.5 w-3.5" /> Export all
         </Button>
       </div>
