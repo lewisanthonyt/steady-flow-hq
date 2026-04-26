@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
   Area,
@@ -7,8 +7,6 @@ import {
   BarChart,
   CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -24,6 +22,10 @@ import {
   TrendingDown,
   Users,
   Target,
+  Sparkles,
+  Phone,
+  ListTodo,
+  CalendarDays,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,6 +40,8 @@ import {
   gbp,
   statusColor,
   STATUS_ORDER,
+  tasks,
+  priorityColor,
 } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/dashboard")({
