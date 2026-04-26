@@ -210,7 +210,19 @@ function TemplateLibrary() {
                 <CardTitle className="text-base">{t.name}</CardTitle>
                 <p className="text-xs text-muted-foreground mt-1">{t.subject}</p>
               </div>
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(`${t.subject}\n\n${t.body}`);
+                    toast.success("Template copied to clipboard");
+                  } catch {
+                    toast.error("Couldn't copy. Try again.");
+                  }
+                }}
+              >
                 <Copy className="h-3.5 w-3.5" /> Copy
               </Button>
             </div>
