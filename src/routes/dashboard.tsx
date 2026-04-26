@@ -28,6 +28,7 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { JobsMap } from "@/components/JobsMap";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -217,6 +218,9 @@ function DashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Map */}
+        <JobsMap />
 
         {/* Pipeline + Upcoming */}
         <div className="grid lg:grid-cols-3 gap-4">
