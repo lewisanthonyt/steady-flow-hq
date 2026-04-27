@@ -16,6 +16,7 @@ import {
   Bell as BellIcon,
   HardHat,
   LineChart,
+  Megaphone,
 } from "lucide-react";
 import logo from "@/assets/steadyworks-logo.png";
 import { cn } from "@/lib/utils";
@@ -43,6 +44,7 @@ const nav = [
   { to: "/customers", label: "Customers", icon: Users },
   { to: "/finance", label: "Finance", icon: Receipt },
   { to: "/accounts", label: "Accounts", icon: LineChart },
+  { to: "/marketing", label: "Marketing", icon: Megaphone },
   { to: "/quotes", label: "Quotes", icon: FileText },
 ] as const;
 

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as QuotesRouteImport } from './routes/quotes'
+import { Route as MarketingRouteImport } from './routes/marketing'
 import { Route as JobsRouteImport } from './routes/jobs'
 import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -27,6 +28,11 @@ const TasksRoute = TasksRouteImport.update({
 const QuotesRoute = QuotesRouteImport.update({
   id: '/quotes',
   path: '/quotes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketingRoute = MarketingRouteImport.update({
+  id: '/marketing',
+  path: '/marketing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JobsRoute = JobsRouteImport.update({
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
   '/jobs': typeof JobsRoute
+  '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
   '/tasks': typeof TasksRoute
 }
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
   '/jobs': typeof JobsRoute
+  '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
   '/tasks': typeof TasksRoute
 }
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
   '/jobs': typeof JobsRoute
+  '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
   '/tasks': typeof TasksRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/finance'
     | '/jobs'
+    | '/marketing'
     | '/quotes'
     | '/tasks'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/finance'
     | '/jobs'
+    | '/marketing'
     | '/quotes'
     | '/tasks'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/finance'
     | '/jobs'
+    | '/marketing'
     | '/quotes'
     | '/tasks'
   fileRoutesById: FileRoutesById
@@ -143,6 +155,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   FinanceRoute: typeof FinanceRoute
   JobsRoute: typeof JobsRoute
+  MarketingRoute: typeof MarketingRoute
   QuotesRoute: typeof QuotesRoute
   TasksRoute: typeof TasksRoute
 }
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/quotes'
       fullPath: '/quotes'
       preLoaderRoute: typeof QuotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketing': {
+      id: '/marketing'
+      path: '/marketing'
+      fullPath: '/marketing'
+      preLoaderRoute: typeof MarketingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/jobs': {
@@ -223,6 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   FinanceRoute: FinanceRoute,
   JobsRoute: JobsRoute,
+  MarketingRoute: MarketingRoute,
   QuotesRoute: QuotesRoute,
   TasksRoute: TasksRoute,
 }
