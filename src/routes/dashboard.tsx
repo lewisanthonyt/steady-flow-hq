@@ -277,7 +277,12 @@ function DashboardPage() {
           <CardContent>
             <div className="space-y-2">
               {jobs.slice(0, 6).map((j) => (
-                <div key={j.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                <button
+                  type="button"
+                  key={j.id}
+                  onClick={() => openJob({ legacyJobId: j.id, customer: j.customer, jobType: j.jobType })}
+                  className="w-full text-left flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="h-9 w-9 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">
                       {j.customer.split(" ").map((n) => n[0]).slice(0, 2).join("")}
@@ -291,7 +296,7 @@ function DashboardPage() {
                     <span className="text-sm font-semibold tabular-nums">{j.priceQuoted ? gbp(j.priceQuoted) : "—"}</span>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusColor(j.status)}`}>{j.status}</span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </CardContent>
