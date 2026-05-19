@@ -1,5 +1,7 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useJobsStore, globalSearch } from "@/lib/jobs-store";
+import { NewJobDialog } from "@/components/NewJobDialog";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 import {
