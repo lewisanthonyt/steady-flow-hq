@@ -289,10 +289,10 @@ function MarketingPage() {
             <SelectTrigger className="w-44">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All sources</SelectItem>
-              {ALL_SOURCES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-            </SelectContent>
+              <SelectContent>
+                <SelectItem value="all">All sources</SelectItem>
+                {allSources.map((s: LeadSource) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
           </Select>
           <Dialog open={openAdd} onOpenChange={setOpenAdd}>
             <DialogTrigger asChild>
@@ -308,9 +308,9 @@ function MarketingPage() {
                   <Label>Source / platform</Label>
                   <Select value={fSource} onValueChange={(v) => setFSource(v as LeadSource)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {ALL_SOURCES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                    </SelectContent>
+                  <SelectContent>
+                    {allSources.map((s: LeadSource) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  </SelectContent>
                   </Select>
                 </div>
                 <div>
