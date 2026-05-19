@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UsersRouteImport } from './routes/users'
 import { Route as TasksRouteImport } from './routes/tasks'
+import { Route as TargetsRouteImport } from './routes/targets'
 import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as MarketingRouteImport } from './routes/marketing'
 import { Route as JobsRouteImport } from './routes/jobs'
@@ -31,6 +32,11 @@ const UsersRoute = UsersRouteImport.update({
 const TasksRoute = TasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TargetsRoute = TargetsRouteImport.update({
+  id: '/targets',
+  path: '/targets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuotesRoute = QuotesRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/jobs': typeof JobsRoute
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
+  '/targets': typeof TargetsRoute
   '/tasks': typeof TasksRoute
   '/users': typeof UsersRoute
 }
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/jobs': typeof JobsRoute
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
+  '/targets': typeof TargetsRoute
   '/tasks': typeof TasksRoute
   '/users': typeof UsersRoute
 }
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/jobs': typeof JobsRoute
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
+  '/targets': typeof TargetsRoute
   '/tasks': typeof TasksRoute
   '/users': typeof UsersRoute
 }
@@ -149,6 +158,7 @@ export interface FileRouteTypes {
     | '/jobs'
     | '/marketing'
     | '/quotes'
+    | '/targets'
     | '/tasks'
     | '/users'
   fileRoutesByTo: FileRoutesByTo
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/jobs'
     | '/marketing'
     | '/quotes'
+    | '/targets'
     | '/tasks'
     | '/users'
   id:
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/jobs'
     | '/marketing'
     | '/quotes'
+    | '/targets'
     | '/tasks'
     | '/users'
   fileRoutesById: FileRoutesById
@@ -195,6 +207,7 @@ export interface RootRouteChildren {
   JobsRoute: typeof JobsRoute
   MarketingRoute: typeof MarketingRoute
   QuotesRoute: typeof QuotesRoute
+  TargetsRoute: typeof TargetsRoute
   TasksRoute: typeof TasksRoute
   UsersRoute: typeof UsersRoute
 }
@@ -213,6 +226,13 @@ declare module '@tanstack/react-router' {
       path: '/tasks'
       fullPath: '/tasks'
       preLoaderRoute: typeof TasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/targets': {
+      id: '/targets'
+      path: '/targets'
+      fullPath: '/targets'
+      preLoaderRoute: typeof TargetsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quotes': {
@@ -307,18 +327,10 @@ const rootRouteChildren: RootRouteChildren = {
   JobsRoute: JobsRoute,
   MarketingRoute: MarketingRoute,
   QuotesRoute: QuotesRoute,
+  TargetsRoute: TargetsRoute,
   TasksRoute: TasksRoute,
   UsersRoute: UsersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
