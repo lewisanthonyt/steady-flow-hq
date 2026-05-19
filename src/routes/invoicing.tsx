@@ -430,7 +430,20 @@ function InvoicingPage() {
                       const t = totals(d);
                       return (
                         <tr key={d.id} className="border-t hover:bg-muted/30 transition-colors">
-                          <td className="p-3 font-mono text-xs font-bold">{d.number}</td>
+                          <td className="p-3 font-mono text-xs font-bold">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (!openJob({ customer: d.customer, docNumber: d.number })) {
+                                  toast.info(`No linked Job for ${d.number}`);
+                                }
+                              }}
+                              className="text-primary hover:underline"
+                              title="Open linked Job workspace"
+                            >
+                              {d.number}
+                            </button>
+                          </td>
                           <td className="p-3">
                             <span
                               className={cn(
