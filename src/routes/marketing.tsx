@@ -63,6 +63,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 
+import { AppShell } from "@/components/AppShell";
 import {
   marketingSpend as seedSpend,
   leads as seedLeads,
@@ -258,6 +259,7 @@ function MarketingPage() {
   };
 
   return (
+    <AppShell>
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
@@ -626,6 +628,7 @@ function MarketingPage() {
         </TabsContent>
       </Tabs>
     </div>
+    </AppShell>
   );
 }
 
