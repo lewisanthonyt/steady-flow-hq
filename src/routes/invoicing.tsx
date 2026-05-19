@@ -181,6 +181,46 @@ function totals(doc: Pick<DocRecord, "items" | "vat" | "vatRate">) {
   return { sub, vat, total: sub + vat };
 }
 
+// Deterministic, collision-proof document numbering.
+// Format: {PREFIX}-{YYYYMM}-{NNN}  e.g. INV-202605-014, QT-202605-007
+// Sequence resets each calendar month per type. Drafts reserve a number
+// immediately and a uniqueness check guarantees no collision with existing docs.
+function docPrefix(type: "Invoice" | "Quote") {
+  return type === "Invoice" ? "INV" : "QT";
+}
+
+function periodKey(date = new Date()) {
+  return `${date.getFullYear()}${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function nextDocNumber(
+  existing: { type: "Invoice" | "Quote"; number: string }[],
+  type: "Invoice" | "Quote",
+  date = new Date(),
+): string {
+  const prefix = docPrefix(type);
+  const period = periodKey(date);
+  const re = new RegExp(`^${prefix}-${period}-(\\d{3,})$`);
+  let maxSeq = 0;
+  for (const d of existing) {
+    if (d.type !== type) continue;
+    const m = d.number.match(re);
+    if (m) {
+      const n = parseInt(m[1], 10);
+      if (n > maxSeq) maxSeq = n;
+    }
+  }
+  let seq = maxSeq + 1;
+  // Hard collision guard against any unexpected duplicate
+  const taken = new Set(existing.map((d) => d.number));
+  let candidate = `${prefix}-${period}-${String(seq).padStart(3, "0")}`;
+  while (taken.has(candidate)) {
+    seq += 1;
+    candidate = `${prefix}-${period}-${String(seq).padStart(3, "0")}`;
+  }
+  return candidate;
+}
+
 function statusBadge(s: DocStatus) {
   const base = "px-2 py-0.5 rounded-full text-[10px] font-semibold border";
   switch (s) {
