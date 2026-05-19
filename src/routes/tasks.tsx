@@ -125,9 +125,9 @@ function TasksPage() {
           {/* Daily Planner */}
           <TabsContent value="planner" className="mt-4">
             <div className="grid lg:grid-cols-3 gap-4">
-              <PlannerColumn title="Overdue" items={overdueList} onToggle={toggle} tone="danger" />
-              <PlannerColumn title="Today" items={todayList} onToggle={toggle} tone="accent" />
-              <PlannerColumn title="Upcoming" items={upcomingList.slice(0, 8)} onToggle={toggle} />
+              <PlannerColumn title="Overdue" items={overdueList} onToggle={toggle} onOpen={open} tone="danger" />
+              <PlannerColumn title="Today" items={todayList} onToggle={toggle} onOpen={open} tone="accent" />
+              <PlannerColumn title="Upcoming" items={upcomingList.slice(0, 8)} onToggle={toggle} onOpen={open} />
             </div>
           </TabsContent>
 
@@ -136,7 +136,7 @@ function TasksPage() {
             <Card>
               <CardContent className="p-0 divide-y">
                 {filtered.map((t) => (
-                  <TaskRow key={t.id} task={t} onToggle={toggle} />
+                  <TaskRow key={t.id} task={t} onToggle={toggle} onOpen={open} />
                 ))}
                 {filtered.length === 0 && <div className="p-6 text-center text-sm text-muted-foreground">No tasks match.</div>}
               </CardContent>
@@ -156,12 +156,14 @@ function TasksPage() {
                     </div>
                     <div className="space-y-2">
                       {list.map((t, i) => (
-                        <motion.div
+                        <motion.button
                           key={t.id}
+                          type="button"
+                          onClick={() => open(t)}
                           initial={{ opacity: 0, y: 6 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.03 }}
-                          className="rounded-md bg-card border p-3 shadow-sm hover:shadow-md transition cursor-grab"
+                          className="w-full text-left rounded-md bg-card border p-3 shadow-sm hover:shadow-md hover:border-primary/40 transition cursor-pointer"
                         >
                           <div className="flex items-start justify-between gap-2">
                             <p className="text-sm font-medium leading-snug">{t.title}</p>
@@ -171,8 +173,9 @@ function TasksPage() {
                             <span className="flex items-center gap-1"><User className="h-3 w-3" /> {t.assignedTo}</span>
                             <span className="flex items-center gap-1"><CalendarDays className="h-3 w-3" /> {new Date(t.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}{t.dueTime ? ` · ${t.dueTime}` : ""}</span>
                             {t.repeat && t.repeat !== "None" && <span className="flex items-center gap-1"><Repeat className="h-3 w-3" /> {t.repeat}</span>}
+                            {t.relatedTo && <span className="ml-auto text-primary font-semibold">→ Job</span>}
                           </div>
-                        </motion.div>
+                        </motion.button>
                       ))}
                     </div>
                   </div>
@@ -183,7 +186,9 @@ function TasksPage() {
 
           {/* Week */}
           <TabsContent value="week" className="mt-4">
-            <WeekView items={filtered} onToggle={toggle} />
+            <WeekView items={filtered} onToggle={toggle} onOpen={open} />
+          </TabsContent>
+
           </TabsContent>
         </Tabs>
       </div>
