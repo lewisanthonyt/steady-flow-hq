@@ -14,6 +14,7 @@ import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as QuotesRouteImport } from './routes/quotes'
 import { Route as MarketingRouteImport } from './routes/marketing'
 import { Route as JobsRouteImport } from './routes/jobs'
+import { Route as InvoicingRouteImport } from './routes/invoicing'
 import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CustomersRouteImport } from './routes/customers'
@@ -45,6 +46,11 @@ const MarketingRoute = MarketingRouteImport.update({
 const JobsRoute = JobsRouteImport.update({
   id: '/jobs',
   path: '/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InvoicingRoute = InvoicingRouteImport.update({
+  id: '/invoicing',
+  path: '/invoicing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FinanceRoute = FinanceRouteImport.update({
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
+  '/invoicing': typeof InvoicingRoute
   '/jobs': typeof JobsRoute
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
+  '/invoicing': typeof InvoicingRoute
   '/jobs': typeof JobsRoute
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
+  '/invoicing': typeof InvoicingRoute
   '/jobs': typeof JobsRoute
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/dashboard'
     | '/finance'
+    | '/invoicing'
     | '/jobs'
     | '/marketing'
     | '/quotes'
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/dashboard'
     | '/finance'
+    | '/invoicing'
     | '/jobs'
     | '/marketing'
     | '/quotes'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/customers'
     | '/dashboard'
     | '/finance'
+    | '/invoicing'
     | '/jobs'
     | '/marketing'
     | '/quotes'
@@ -179,6 +191,7 @@ export interface RootRouteChildren {
   CustomersRoute: typeof CustomersRoute
   DashboardRoute: typeof DashboardRoute
   FinanceRoute: typeof FinanceRoute
+  InvoicingRoute: typeof InvoicingRoute
   JobsRoute: typeof JobsRoute
   MarketingRoute: typeof MarketingRoute
   QuotesRoute: typeof QuotesRoute
@@ -221,6 +234,13 @@ declare module '@tanstack/react-router' {
       path: '/jobs'
       fullPath: '/jobs'
       preLoaderRoute: typeof JobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invoicing': {
+      id: '/invoicing'
+      path: '/invoicing'
+      fullPath: '/invoicing'
+      preLoaderRoute: typeof InvoicingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/finance': {
@@ -283,6 +303,7 @@ const rootRouteChildren: RootRouteChildren = {
   CustomersRoute: CustomersRoute,
   DashboardRoute: DashboardRoute,
   FinanceRoute: FinanceRoute,
+  InvoicingRoute: InvoicingRoute,
   JobsRoute: JobsRoute,
   MarketingRoute: MarketingRoute,
   QuotesRoute: QuotesRoute,
