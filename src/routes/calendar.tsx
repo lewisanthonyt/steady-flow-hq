@@ -95,16 +95,16 @@ function CalendarPage() {
           </TabsList>
 
           <TabsContent value="month" className="mt-4">
-            <MonthView cursor={cursor} setCursor={setCursor} items={visible} />
+            <MonthView cursor={cursor} setCursor={setCursor} items={visible} onItem={onItem} />
           </TabsContent>
           <TabsContent value="week" className="mt-4">
-            <WeekView cursor={cursor} setCursor={setCursor} items={visible} />
+            <WeekView cursor={cursor} setCursor={setCursor} items={visible} onItem={onItem} />
           </TabsContent>
           <TabsContent value="day" className="mt-4">
-            <DayView cursor={cursor} setCursor={setCursor} items={visible} />
+            <DayView cursor={cursor} setCursor={setCursor} items={visible} onItem={onItem} />
           </TabsContent>
           <TabsContent value="agenda" className="mt-4">
-            <AgendaView items={visible} />
+            <AgendaView items={visible} onItem={onItem} />
           </TabsContent>
         </Tabs>
       </div>
