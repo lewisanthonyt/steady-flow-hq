@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { customers, jobs, gbp } from "@/lib/mock-data";
+import { useOpenJob } from "@/lib/job-links";
 
 export const Route = createFileRoute("/customers")({
   head: () => ({
