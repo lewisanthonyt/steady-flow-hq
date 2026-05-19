@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { gbp, statusColor, STATUS_ORDER, type JobStatus } from "@/lib/mock-data";
 import { useJobsStore, jobTotals } from "@/lib/jobs-store";
 import { NewJobDialog } from "@/components/NewJobDialog";
+import { JobLink } from "@/components/JobLink";
 
 export const Route = createFileRoute("/jobs")({
   head: () => ({
@@ -127,7 +128,7 @@ function KanbanView({ jobs }: { jobs: J[] }) {
                     <Card className="cursor-pointer hover:shadow-md hover:border-primary/40 transition-all" onClick={() => navigate({ to: "/jobs/$jobId", params: { jobId: j.id } })}>
                       <CardContent className="p-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-mono font-bold text-primary">{j.id}</span>
+                          <JobLink jobId={j.id} size="xs" />
                           {j.priority === "Urgent" && <span className="text-[9px] font-bold uppercase text-destructive">Urgent</span>}
                         </div>
                         <div className="font-medium text-sm mt-1">{j.customerName}</div>
@@ -173,7 +174,7 @@ function ListView({ jobs }: { jobs: J[] }) {
               const t = jobTotals(j);
               return (
                 <tr key={j.id} className="border-t hover:bg-muted/30">
-                  <td className="p-3"><Link to="/jobs/$jobId" params={{ jobId: j.id }} className="font-mono text-xs font-bold text-primary hover:underline">{j.id}</Link></td>
+                  <td className="p-3"><JobLink jobId={j.id} size="sm" /></td>
                   <td className="p-3 font-medium">{j.customerName}</td>
                   <td className="p-3 text-muted-foreground">{j.jobType}</td>
                   <td className="p-3 text-muted-foreground tabular-nums">{j.dueDate ? new Date(j.dueDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) : "—"}</td>

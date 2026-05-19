@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { quotes, emailTemplates, gbp } from "@/lib/mock-data";
 import { useOpenJob } from "@/lib/job-links";
+import { JobLink } from "@/components/JobLink";
 
 export const Route = createFileRoute("/quotes")({
   head: () => ({
@@ -58,6 +59,7 @@ function QuotesPage() {
                   <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
                     <tr>
                       <th className="text-left p-3">Number</th>
+                      <th className="text-left p-3">Job</th>
                       <th className="text-left p-3">Customer</th>
                       <th className="text-left p-3">Work</th>
                       <th className="text-right p-3">Price</th>
@@ -81,6 +83,7 @@ function QuotesPage() {
                           title="Open linked Job workspace"
                         >
                           <td className="p-3 font-mono text-xs font-bold text-primary">{q.number}</td>
+                          <td className="p-3"><JobLink customer={q.customer} docNumber={q.number} size="xs" /></td>
                           <td className="p-3 font-medium">{q.customer}</td>
                           <td className="p-3 text-muted-foreground max-w-md truncate">{q.work}</td>
                           <td className="p-3 text-right font-bold tabular-nums">{gbp(q.price)}</td>

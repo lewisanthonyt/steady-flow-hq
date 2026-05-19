@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import {
   ArrowLeft, Briefcase, Calendar as CalendarIcon, CheckCircle2, Clock, FileText,
   Image as ImageIcon, MapPin, MessageSquare, Paperclip, Phone, Plus, Receipt,
-  Send, Trash2, Upload, User as UserIcon, Wallet,
+  Send, Trash2, Upload, User as UserIcon, Wallet, Copy,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,6 +67,14 @@ function JobWorkspacePage() {
             </Button>
             <div className="flex items-center gap-3 flex-wrap">
               <h1 className="text-3xl font-bold tracking-tight font-mono">{job.id}</h1>
+              <button
+                type="button"
+                onClick={async () => { try { await navigator.clipboard.writeText(job.id); toast.success(`${job.id} copied`); } catch { toast.error("Couldn't copy"); } }}
+                className="h-7 w-7 rounded-md border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                title="Copy Job ID"
+              >
+                <Copy className="h-3.5 w-3.5" />
+              </button>
               <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${statusColor(job.status)}`}>{job.status}</span>
               {job.priority !== "Normal" && (
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-warning/15 text-warning-foreground border border-warning/30">{job.priority}</span>

@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/dialog";
 import { customers, gbp } from "@/lib/mock-data";
 import { useOpenJob } from "@/lib/job-links";
+import { JobLink } from "@/components/JobLink";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/invoicing")({
@@ -417,6 +418,7 @@ function InvoicingPage() {
                   <thead className="bg-muted/50 text-xs uppercase tracking-wider text-muted-foreground">
                     <tr>
                       <th className="text-left p-3">Number</th>
+                      <th className="text-left p-3">Job</th>
                       <th className="text-left p-3">Type</th>
                       <th className="text-left p-3">Customer</th>
                       <th className="text-left p-3">Date</th>
@@ -444,6 +446,7 @@ function InvoicingPage() {
                               {d.number}
                             </button>
                           </td>
+                          <td className="p-3"><JobLink customer={d.customer} docNumber={d.number} size="xs" /></td>
                           <td className="p-3">
                             <span
                               className={cn(
