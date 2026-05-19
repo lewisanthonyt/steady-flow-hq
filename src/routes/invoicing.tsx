@@ -286,12 +286,12 @@ function InvoicingPage() {
     const copy: DocRecord = {
       ...doc,
       id: crypto.randomUUID(),
-      number: `${doc.type === "Invoice" ? "INV" : "QT"}-${Math.floor(Math.random() * 9000) + 1000}`,
+      number: nextDocNumber(docs, doc.type),
       status: "Draft",
       date: today(),
     };
     setDocs((d) => [copy, ...d]);
-    toast.success("Duplicated as draft.");
+    toast.success(`Duplicated as ${copy.number}.`);
   }
 
   function convertQuote(doc: DocRecord) {
@@ -299,13 +299,13 @@ function InvoicingPage() {
       ...doc,
       id: crypto.randomUUID(),
       type: "Invoice",
-      number: `INV-${Math.floor(Math.random() * 9000) + 1000}`,
+      number: nextDocNumber(docs, "Invoice"),
       status: "Draft",
       date: today(),
       due: today(14),
     };
     setDocs((d) => [inv, ...d.map((x) => (x.id === doc.id ? { ...x, status: "Converted" as DocStatus } : x))]);
-    toast.success(`Quote ${doc.number} converted to invoice.`);
+    toast.success(`Quote ${doc.number} converted to ${inv.number}.`);
   }
 
   function setStatus(id: string, status: DocStatus) {
