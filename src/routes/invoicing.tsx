@@ -1081,6 +1081,21 @@ function JobEstimator({
   const [margin, setMargin] = useState(25);
   const [customer, setCustomer] = useState("");
 
+  // Contractor
+  const [contractorCost, setContractorCost] = useState(0);
+  const [contractorUplift, setContractorUplift] = useState(20);
+  const [contractorName, setContractorName] = useState("");
+
+  // Extra labour
+  const [extraLabourCost, setExtraLabourCost] = useState(0);
+  const [extraLabourUplift, setExtraLabourUplift] = useState(15);
+  const [extraLabourNote, setExtraLabourNote] = useState("");
+
+  // Plant / clearance
+  const [plantCost, setPlantCost] = useState(0);
+  const [plantUplift, setPlantUplift] = useState(15);
+  const [plantNote, setPlantNote] = useState("");
+
   const preset = JOB_PRESETS[type];
 
   const labourBase = useMemo(() => {
@@ -1095,9 +1110,20 @@ function JobEstimator({
 
   const travelCost = travel * 0.65;
   const difficultyMult = difficulty * preset.difficulty;
-  const cost = (labourBase + materials + travelCost) * difficultyMult;
-  const suggested = cost * (1 + margin / 100);
-  const profit = suggested - cost;
+
+  const contractorCharge = contractorCost * (1 + contractorUplift / 100);
+  const extraLabourCharge = extraLabourCost * (1 + extraLabourUplift / 100);
+  const plantCharge = plantCost * (1 + plantUplift / 100);
+
+  const ourCost =
+    (labourBase + materials + travelCost) * difficultyMult +
+    contractorCost +
+    extraLabourCost +
+    plantCost;
+  const baseCharge =
+    (labourBase + materials + travelCost) * difficultyMult * (1 + margin / 100);
+  const suggested = baseCharge + contractorCharge + extraLabourCharge + plantCharge;
+  const profit = suggested - ourCost;
 
   return (
     <div className="grid lg:grid-cols-2 gap-4">
@@ -1162,6 +1188,81 @@ function JobEstimator({
             <Switch checked={emergency} onCheckedChange={setEmergency} />
           </div>
 
+          {/* Contractor */}
+          <div className="rounded-md border p-3 space-y-3 bg-muted/30">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold">Contractor</div>
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Charge: {gbp(contractorCharge)}
+              </span>
+            </div>
+            <Field label="Contractor name / role">
+              <Input
+                value={contractorName}
+                onChange={(e) => setContractorName(e.target.value)}
+                placeholder="e.g. Tiler, Electrician"
+              />
+            </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Contractor cost £">
+                <Input type="number" value={contractorCost} onChange={(e) => setContractorCost(Number(e.target.value))} />
+              </Field>
+              <Field label="Our uplift %">
+                <Input type="number" value={contractorUplift} onChange={(e) => setContractorUplift(Number(e.target.value))} />
+              </Field>
+            </div>
+          </div>
+
+          {/* Extra labour */}
+          <div className="rounded-md border p-3 space-y-3 bg-muted/30">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold">Extra labour</div>
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Charge: {gbp(extraLabourCharge)}
+              </span>
+            </div>
+            <Field label="Description">
+              <Input
+                value={extraLabourNote}
+                onChange={(e) => setExtraLabourNote(e.target.value)}
+                placeholder="e.g. 2nd pair of hands — 1 day"
+              />
+            </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Labour cost £">
+                <Input type="number" value={extraLabourCost} onChange={(e) => setExtraLabourCost(Number(e.target.value))} />
+              </Field>
+              <Field label="Our uplift %">
+                <Input type="number" value={extraLabourUplift} onChange={(e) => setExtraLabourUplift(Number(e.target.value))} />
+              </Field>
+            </div>
+          </div>
+
+          {/* Clearance / Plant */}
+          <div className="rounded-md border p-3 space-y-3 bg-muted/30">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold">Clearance / Plant hire</div>
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                Charge: {gbp(plantCharge)}
+              </span>
+            </div>
+            <Field label="Description">
+              <Input
+                value={plantNote}
+                onChange={(e) => setPlantNote(e.target.value)}
+                placeholder="e.g. Skip hire, mini digger, waste removal"
+              />
+            </Field>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Plant / clearance cost £">
+                <Input type="number" value={plantCost} onChange={(e) => setPlantCost(Number(e.target.value))} />
+              </Field>
+              <Field label="Our uplift %">
+                <Input type="number" value={plantUplift} onChange={(e) => setPlantUplift(Number(e.target.value))} />
+              </Field>
+            </div>
+          </div>
+
           <Button
             className="w-full gap-2"
             onClick={() => {
@@ -1171,23 +1272,50 @@ function JobEstimator({
                   kind: emergency ? "Callout" : "Labour",
                   description: `${type} — ${hours}h${emergency ? " (emergency)" : ""}`,
                   qty: 1,
-                  unitPrice: Math.round(labourBase * difficultyMult),
+                  unitPrice: Math.round(labourBase * difficultyMult * (1 + margin / 100)),
                 },
                 {
                   id: crypto.randomUUID(),
                   kind: "Materials",
                   description: "Materials & parts",
                   qty: 1,
-                  unitPrice: Math.round(materials * difficultyMult),
+                  unitPrice: Math.round(materials * difficultyMult * (1 + margin / 100)),
                 },
                 {
                   id: crypto.randomUUID(),
                   kind: "Travel",
                   description: `${travel} miles`,
                   qty: 1,
-                  unitPrice: Math.round(travelCost),
+                  unitPrice: Math.round(travelCost * (1 + margin / 100)),
                 },
               ];
+              if (contractorCost > 0) {
+                items.push({
+                  id: crypto.randomUUID(),
+                  kind: "Other",
+                  description: `Contractor${contractorName ? ` — ${contractorName}` : ""}`,
+                  qty: 1,
+                  unitPrice: Math.round(contractorCharge),
+                });
+              }
+              if (extraLabourCost > 0) {
+                items.push({
+                  id: crypto.randomUUID(),
+                  kind: "Labour",
+                  description: extraLabourNote || "Additional labour",
+                  qty: 1,
+                  unitPrice: Math.round(extraLabourCharge),
+                });
+              }
+              if (plantCost > 0) {
+                items.push({
+                  id: crypto.randomUUID(),
+                  kind: "Other",
+                  description: plantNote || "Clearance / plant hire",
+                  qty: 1,
+                  unitPrice: Math.round(plantCharge),
+                });
+              }
               onCreateQuote(items, customer);
               toast.success("Quote draft created from estimate.");
             }}
@@ -1206,9 +1334,27 @@ function JobEstimator({
           <Breakdown label="Materials" value={gbp(materials)} />
           <Breakdown label="Travel" value={gbp(travelCost)} />
           <Breakdown label="Difficulty" value={`× ${difficultyMult.toFixed(2)}`} />
+          {contractorCost > 0 && (
+            <Breakdown
+              label={`Contractor (+${contractorUplift}%)`}
+              value={`${gbp(contractorCost)} → ${gbp(contractorCharge)}`}
+            />
+          )}
+          {extraLabourCost > 0 && (
+            <Breakdown
+              label={`Extra labour (+${extraLabourUplift}%)`}
+              value={`${gbp(extraLabourCost)} → ${gbp(extraLabourCharge)}`}
+            />
+          )}
+          {plantCost > 0 && (
+            <Breakdown
+              label={`Clearance / plant (+${plantUplift}%)`}
+              value={`${gbp(plantCost)} → ${gbp(plantCharge)}`}
+            />
+          )}
           <div className="border-t pt-3 space-y-2">
-            <Breakdown label="Estimated cost" value={gbp(cost)} muted />
-            <Breakdown label={`Margin (${margin}%)`} value={gbp(profit)} muted />
+            <Breakdown label="Our cost" value={gbp(ourCost)} muted />
+            <Breakdown label={`Profit`} value={gbp(profit)} muted />
           </div>
           <div className="rounded-lg bg-secondary text-secondary-foreground p-4 flex items-center justify-between">
             <div>
@@ -1218,7 +1364,7 @@ function JobEstimator({
             <Receipt className="h-8 w-8 opacity-50" />
           </div>
           <div className="text-[11px] text-muted-foreground">
-            Based on UK trades averages — adjust hours, materials & margin to match the job.
+            Contractor, extra labour and plant are added on top of the core estimate with their own uplift — keep your margin protected.
           </div>
         </CardContent>
       </Card>
