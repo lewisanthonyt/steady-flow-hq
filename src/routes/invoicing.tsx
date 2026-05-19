@@ -321,7 +321,7 @@ function InvoicingPage() {
     const draft: DocRecord = {
       id: crypto.randomUUID(),
       type,
-      number: `${type === "Invoice" ? "INV" : "QT"}-${Math.floor(Math.random() * 9000) + 1000}`,
+      number: nextDocNumber(docs, type),
       customer: "",
       customerEmail: "",
       customerAddress: "",
