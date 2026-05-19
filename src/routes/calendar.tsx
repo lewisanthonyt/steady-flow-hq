@@ -125,7 +125,9 @@ function Header({ label, onPrev, onNext, onToday }: { label: string; onPrev: () 
   );
 }
 
-function MonthView({ cursor, setCursor, items }: { cursor: Date; setCursor: (d: Date) => void; items: CalendarItem[] }) {
+type ViewProps = { cursor: Date; setCursor: (d: Date) => void; items: CalendarItem[]; onItem: (it: CalendarItem) => void };
+
+function MonthView({ cursor, setCursor, items, onItem }: ViewProps) {
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
   const first = new Date(year, month, 1);
@@ -163,9 +165,15 @@ function MonthView({ cursor, setCursor, items }: { cursor: Date; setCursor: (d: 
                 <div className={cn("text-xs font-semibold", isToday ? "text-primary" : "text-foreground")}>{c.date.getDate()}</div>
                 <div className="space-y-0.5 overflow-hidden">
                   {dayItems.slice(0, 3).map((it) => (
-                    <div key={it.id} className={cn("text-[10px] px-1.5 py-0.5 rounded truncate font-medium", calendarTypeColor(it.type))} title={it.title}>
+                    <button
+                      type="button"
+                      key={it.id}
+                      onClick={() => onItem(it)}
+                      className={cn("text-[10px] px-1.5 py-0.5 rounded truncate font-medium w-full text-left hover:brightness-110", calendarTypeColor(it.type))}
+                      title={`${it.title} — open Job`}
+                    >
                       {it.time ? `${it.time} ` : ""}{it.title}
-                    </div>
+                    </button>
                   ))}
                   {dayItems.length > 3 && <div className="text-[10px] text-muted-foreground px-1">+{dayItems.length - 3} more</div>}
                 </div>
@@ -178,7 +186,7 @@ function MonthView({ cursor, setCursor, items }: { cursor: Date; setCursor: (d: 
   );
 }
 
-function WeekView({ cursor, setCursor, items }: { cursor: Date; setCursor: (d: Date) => void; items: CalendarItem[] }) {
+function WeekView({ cursor, setCursor, items, onItem }: ViewProps) {
   const start = new Date(cursor);
   start.setDate(cursor.getDate() - ((cursor.getDay() + 6) % 7));
   const days = Array.from({ length: 7 }).map((_, i) => {
@@ -208,10 +216,15 @@ function WeekView({ cursor, setCursor, items }: { cursor: Date; setCursor: (d: D
                 </div>
                 <div className="space-y-1">
                   {list.map((it) => (
-                    <div key={it.id} className={cn("text-[11px] px-1.5 py-1 rounded font-medium", calendarTypeColor(it.type))}>
+                    <button
+                      type="button"
+                      key={it.id}
+                      onClick={() => onItem(it)}
+                      className={cn("text-[11px] px-1.5 py-1 rounded font-medium w-full text-left hover:brightness-110", calendarTypeColor(it.type))}
+                    >
                       {it.time && <div className="font-bold">{it.time}</div>}
                       <div className="leading-tight">{it.title}</div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -223,7 +236,7 @@ function WeekView({ cursor, setCursor, items }: { cursor: Date; setCursor: (d: D
   );
 }
 
-function DayView({ cursor, setCursor, items }: { cursor: Date; setCursor: (d: Date) => void; items: CalendarItem[] }) {
+function DayView({ cursor, setCursor, items, onItem }: ViewProps) {
   const iso = cursor.toISOString().slice(0, 10);
   const list = items.filter((it) => it.date === iso).sort((a,b) => (a.time || "23:59").localeCompare(b.time || "23:59"));
   return (
@@ -238,14 +251,19 @@ function DayView({ cursor, setCursor, items }: { cursor: Date; setCursor: (d: Da
         <div className="space-y-2">
           {list.length === 0 && <p className="text-sm text-muted-foreground text-center py-12">Nothing scheduled.</p>}
           {list.map((it) => (
-            <div key={it.id} className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-muted/40">
+            <button
+              type="button"
+              key={it.id}
+              onClick={() => onItem(it)}
+              className="w-full text-left flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-muted/40 hover:border-primary/40 transition"
+            >
               <div className="w-16 shrink-0 text-sm font-bold tabular-nums">{it.time ?? "—"}</div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium">{it.title}</div>
                 {it.subtitle && <div className="text-xs text-muted-foreground">{it.subtitle}</div>}
               </div>
               <span className={cn("text-[10px] px-2 py-0.5 rounded-full font-bold", calendarTypeColor(it.type))}>{it.type}</span>
-            </div>
+            </button>
           ))}
         </div>
       </CardContent>
@@ -253,7 +271,7 @@ function DayView({ cursor, setCursor, items }: { cursor: Date; setCursor: (d: Da
   );
 }
 
-function AgendaView({ items }: { items: CalendarItem[] }) {
+function AgendaView({ items, onItem }: { items: CalendarItem[]; onItem: (it: CalendarItem) => void }) {
   const sorted = [...items].sort((a,b) => (a.date + (a.time || "")).localeCompare(b.date + (b.time || "")));
   const grouped: Record<string, CalendarItem[]> = {};
   sorted.forEach((it) => { (grouped[it.date] ||= []).push(it); });
@@ -268,12 +286,17 @@ function AgendaView({ items }: { items: CalendarItem[] }) {
             </div>
             <div className="space-y-1.5">
               {list.map((it) => (
-                <div key={it.id} className="flex items-center gap-3 text-sm">
+                <button
+                  type="button"
+                  key={it.id}
+                  onClick={() => onItem(it)}
+                  className="w-full text-left flex items-center gap-3 text-sm rounded-md px-2 py-1 hover:bg-muted/40"
+                >
                   <span className="w-12 text-xs text-muted-foreground tabular-nums">{it.time ?? "—"}</span>
                   <span className={cn("text-[10px] px-2 py-0.5 rounded-full font-bold", calendarTypeColor(it.type))}>{it.type}</span>
                   <span className="font-medium">{it.title}</span>
                   {it.subtitle && <span className="text-xs text-muted-foreground truncate">· {it.subtitle}</span>}
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -282,3 +305,4 @@ function AgendaView({ items }: { items: CalendarItem[] }) {
     </Card>
   );
 }
+
