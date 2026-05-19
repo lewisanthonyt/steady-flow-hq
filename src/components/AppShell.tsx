@@ -19,6 +19,7 @@ import {
   Megaphone,
   Bug,
   Users as UsersIcon2,
+  Target,
 } from "lucide-react";
 import logo from "@/assets/steadyworks-logo.png";
 import { cn } from "@/lib/utils";
@@ -47,6 +48,7 @@ const nav = [
   { to: "/finance", label: "Finance", icon: Receipt },
   { to: "/accounts", label: "Accounts", icon: LineChart },
   { to: "/marketing", label: "Marketing", icon: Megaphone },
+  { to: "/targets", label: "Targets", icon: Target },
   { to: "/quotes", label: "Quotes", icon: FileText },
   { to: "/invoicing", label: "Invoicing", icon: Receipt },
   { to: "/users", label: "Users", icon: UsersIcon2 },
