@@ -334,7 +334,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       <Plus className="h-4 w-4" /> <span className="hidden sm:inline">Quick Add</span>
                     </Button>
                   </DialogTrigger>
-                  <QuickAddContent onPick={() => setQuickOpen(false)} />
+                  <QuickAddContent onPick={() => setQuickOpen(false)} onNewJob={() => { setQuickOpen(false); setNewJobOpen(true); }} />
                 </Dialog>
               </div>
             </div>
