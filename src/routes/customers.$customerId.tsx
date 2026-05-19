@@ -75,7 +75,7 @@ function CustomerProfilePage() {
                       <Briefcase className="h-4 w-4 text-muted-foreground" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-bold">{j.id}</span>
+                          <JobLink jobId={j.id} size="xs" />
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusColor(j.status)}`}>{j.status}</span>
                         </div>
                         <div className="text-sm font-medium mt-0.5">{j.jobType}</div>
@@ -102,7 +102,7 @@ function CustomerProfilePage() {
                   {allActivity.map((e) => (
                     <div key={e.id} className="relative">
                       <div className="absolute -left-[15px] top-1 h-2 w-2 rounded-full bg-primary" />
-                      <div className="text-xs font-mono text-muted-foreground">{e.jobId}</div>
+                      <JobLink jobId={e.jobId} size="xs" />
                       <div className="text-sm">{e.message}</div>
                       <div className="text-[10px] text-muted-foreground">{new Date(e.at).toLocaleString("en-GB")}</div>
                     </div>
