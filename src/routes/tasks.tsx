@@ -29,6 +29,19 @@ function TasksPage() {
   const [items, setItems] = useState<Task[]>(seed);
   const [query, setQuery] = useState("");
   const [assignee, setAssignee] = useState<string>("All");
+  const openJob = useOpenJob();
+
+  const open = (t: Task) => {
+    const rel = t.relatedTo;
+    if (!rel) {
+      toast.info("This task isn't linked to a Job yet.");
+      return;
+    }
+    const ok = /^SW-/i.test(rel)
+      ? openJob({ docNumber: rel })
+      : openJob({ customer: rel });
+    if (!ok) toast.info(`No linked Job found for "${rel}".`);
+  };
 
   const filtered = useMemo(() => items.filter((t) => {
     const matchQ = !query || t.title.toLowerCase().includes(query.toLowerCase()) || (t.relatedTo ?? "").toLowerCase().includes(query.toLowerCase());
