@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Copy, FileText, Mail, Plus, Send } from "lucide-react";
+import { Copy, FileText, Mail, Plus, Send, ExternalLink } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { quotes, emailTemplates, gbp } from "@/lib/mock-data";
+import { useOpenJob } from "@/lib/job-links";
 
 export const Route = createFileRoute("/quotes")({
   head: () => ({
