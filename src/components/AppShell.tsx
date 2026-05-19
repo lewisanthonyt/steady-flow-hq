@@ -354,8 +354,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Plus className="h-6 w-6" />
             </Button>
           </DialogTrigger>
-          <QuickAddContent onPick={() => setQuickOpen(false)} />
+          <QuickAddContent onPick={() => setQuickOpen(false)} onNewJob={() => { setQuickOpen(false); setNewJobOpen(true); }} />
         </Dialog>
+
+        <NewJobDialog open={newJobOpen} onOpenChange={setNewJobOpen} />
       </div>
     </TooltipProvider>
   );
