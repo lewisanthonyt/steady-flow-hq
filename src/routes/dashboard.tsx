@@ -248,7 +248,12 @@ function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               {upcoming.map((j) => (
-                <div key={j.id} className="flex items-start justify-between gap-2 text-sm border-b last:border-0 pb-2 last:pb-0">
+                <button
+                  type="button"
+                  key={j.id}
+                  onClick={() => openJob({ legacyJobId: j.id, customer: j.customer, jobType: j.jobType })}
+                  className="w-full text-left flex items-start justify-between gap-2 text-sm border-b last:border-0 pb-2 last:pb-0 hover:bg-muted/40 rounded px-1 transition"
+                >
                   <div className="min-w-0">
                     <div className="font-medium truncate">{j.customer}</div>
                     <div className="text-xs text-muted-foreground truncate">{j.jobType}</div>
@@ -257,8 +262,9 @@ function DashboardPage() {
                     <div className="text-xs font-semibold">{new Date(j.date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</div>
                     <div className="text-[10px] text-muted-foreground">{j.time}</div>
                   </div>
-                </div>
+                </button>
               ))}
+
             </CardContent>
           </Card>
         </div>
