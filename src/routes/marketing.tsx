@@ -300,6 +300,15 @@ function MarketingPage() {
   return (
     <AppShell>
     <div className="space-y-6">
+      {/* Nav */}
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Link to="/" className="flex items-center gap-1 hover:text-foreground transition-colors">
+          <Home className="h-3.5 w-3.5" /> Home
+        </Link>
+        <span>/</span>
+        <span className="text-foreground font-medium">Marketing</span>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
@@ -321,6 +330,46 @@ function MarketingPage() {
                 {allSources.map((s: LeadSource) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
               </SelectContent>
           </Select>
+          <Dialog open={openManage} onOpenChange={setOpenManage}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="gap-2"><Settings2 className="h-4 w-4" /> Sources</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Manage Sources</DialogTitle>
+                <DialogDescription>Add or remove marketing channels.</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={newSourceName}
+                    onChange={(e) => setNewSourceName(e.target.value)}
+                    placeholder="New source name…"
+                    onKeyDown={(e) => { if (e.key === "Enter") addSource(); }}
+                  />
+                  <Button onClick={addSource} size="sm"><Plus className="h-4 w-4" /></Button>
+                </div>
+                <div className="space-y-1 max-h-72 overflow-y-auto">
+                  {allSources.map((src) => {
+                    const isDefault = DEFAULT_SOURCES.includes(src);
+                    return (
+                      <div key={src} className="flex items-center justify-between p-2 rounded-md border hover:bg-muted/40 transition-colors">
+                        <span className="text-sm font-medium">{src}</span>
+                        {!isDefault && (
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive" onClick={() => removeSource(src)}>
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setOpenManage(false)}>Close</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Dialog open={openAdd} onOpenChange={setOpenAdd}>
             <DialogTrigger asChild>
               <Button className="gap-2"><Plus className="h-4 w-4" /> Log Spend</Button>
