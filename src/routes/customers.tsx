@@ -152,7 +152,16 @@ function CustomersPage() {
                 ) : (
                   <div className="divide-y">
                     {customerJobs.map((j) => (
-                      <div key={j.id} className="p-4 flex flex-wrap items-center justify-between gap-3 hover:bg-muted/30">
+                      <button
+                        type="button"
+                        key={j.id}
+                        onClick={() => {
+                          if (!openJob({ legacyJobId: j.id, customer: j.customer, jobType: j.jobType })) {
+                            toast.info("No linked Job workspace found.");
+                          }
+                        }}
+                        className="w-full text-left p-4 flex flex-wrap items-center justify-between gap-3 hover:bg-muted/40 transition"
+                      >
                         <div>
                           <div className="font-medium">{j.jobType}</div>
                           <div className="text-xs text-muted-foreground">
@@ -162,10 +171,12 @@ function CustomersPage() {
                         <div className="flex items-center gap-3">
                           <span className="font-bold tabular-nums">{j.priceQuoted ? gbp(j.priceQuoted) : "—"}</span>
                           <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{j.status}</span>
+                          <span className="text-[10px] font-bold text-primary">→ Open Job</span>
                         </div>
-                      </div>
+                      </button>
                     ))}
                   </div>
+
                 )}
               </CardContent>
             </Card>
