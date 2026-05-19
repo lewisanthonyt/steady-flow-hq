@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { buildCalendarItems, calendarTypeColor, type CalendarItem } from "@/lib/mock-data";
+import { useOpenJob } from "@/lib/job-links";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/calendar")({
