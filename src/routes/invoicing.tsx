@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/dialog";
 import { customers, gbp } from "@/lib/mock-data";
 import { useOpenJob } from "@/lib/job-links";
+import { JobLink } from "@/components/JobLink";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/invoicing")({
