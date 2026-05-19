@@ -353,6 +353,9 @@ function InvoicingPage() {
             </p>
           </div>
           <div className="flex gap-2">
+            <Button variant="outline" className="gap-2" onClick={() => setTab("estimator")}>
+              <Calculator className="h-4 w-4" /> Estimator
+            </Button>
             <Button variant="outline" className="gap-2" onClick={() => newDraft("Quote")}>
               <Plus className="h-4 w-4" /> New Quote
             </Button>
