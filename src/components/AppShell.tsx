@@ -1,5 +1,7 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { useJobsStore, globalSearch } from "@/lib/jobs-store";
+import { NewJobDialog } from "@/components/NewJobDialog";
 import { AnimatePresence, motion } from "framer-motion";
 import { toast } from "sonner";
 import {
@@ -168,33 +170,50 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [quickOpen, setQuickOpen] = useState(false);
+  const [newJobOpen, setNewJobOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [collapsed, setCollapsed] = useLocalStorage<boolean>(COLLAPSE_KEY, false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
-  // Track recent pages
+  // Global search uses the jobs store
+  const store = useJobsStore();
+  const searchResults = useMemo(() => globalSearch(store, searchQuery), [store, searchQuery]);
+
+  // Track recent pages (only after mount to avoid hydration mismatch)
   const [recent, setRecent] = useLocalStorage<string[]>(RECENT_KEY, []);
   useEffect(() => {
+    if (!mounted) return;
     const path = location.pathname;
     const item = allNavItems.find((i) => path === i.to || path.startsWith(i.to + "/"));
     if (!item) return;
     setRecent([item.to, ...recent.filter((r) => r !== item.to)].slice(0, 4));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
+  }, [location.pathname, mounted]);
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = searchQuery.trim().toLowerCase();
     if (!q) return;
+    if (searchResults.jobs.length > 0) {
+      navigate({ to: "/jobs/$jobId", params: { jobId: searchResults.jobs[0].id } });
+      setSearchQuery(""); setSearchOpen(false);
+      return;
+    }
+    if (searchResults.customers.length > 0) {
+      navigate({ to: "/customers/$customerId", params: { customerId: searchResults.customers[0].id } });
+      setSearchQuery(""); setSearchOpen(false);
+      return;
+    }
     const hit = allNavItems.find((i) => i.label.toLowerCase().includes(q));
     if (hit) {
       navigate({ to: hit.to });
-      setSearchQuery("");
+      setSearchQuery(""); setSearchOpen(false);
       return;
     }
-    toast.info(`Searching for "${searchQuery}"…`, { description: "Try Customers or Jobs for full results." });
-    navigate({ to: "/customers" });
-    setSearchQuery("");
+    toast.info(`No matches for "${searchQuery}"`);
   };
 
   const sidebarWidth = collapsed ? "w-[72px]" : "w-64";
@@ -216,7 +235,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             collapsed={collapsed}
             onToggleCollapse={() => setCollapsed(!collapsed)}
             currentPath={location.pathname}
-            recent={recent}
+            recent={mounted ? recent : []}
             onQuickAdd={() => setQuickOpen(true)}
           />
         </motion.aside>
@@ -315,7 +334,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                       <Plus className="h-4 w-4" /> <span className="hidden sm:inline">Quick Add</span>
                     </Button>
                   </DialogTrigger>
-                  <QuickAddContent onPick={() => setQuickOpen(false)} />
+                  <QuickAddContent onPick={() => setQuickOpen(false)} onNewJob={() => { setQuickOpen(false); setNewJobOpen(true); }} />
                 </Dialog>
               </div>
             </div>
@@ -335,8 +354,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Plus className="h-6 w-6" />
             </Button>
           </DialogTrigger>
-          <QuickAddContent onPick={() => setQuickOpen(false)} />
+          <QuickAddContent onPick={() => setQuickOpen(false)} onNewJob={() => { setQuickOpen(false); setNewJobOpen(true); }} />
         </Dialog>
+
+        <NewJobDialog open={newJobOpen} onOpenChange={setNewJobOpen} />
       </div>
     </TooltipProvider>
   );
@@ -642,7 +663,7 @@ function NavLeaf({
   return link;
 }
 
-function QuickAddContent({ onPick }: { onPick: () => void }) {
+function QuickAddContent({ onPick, onNewJob }: { onPick: () => void; onNewJob: () => void }) {
   return (
     <DialogContent className="max-w-lg">
       <DialogHeader>
@@ -652,13 +673,9 @@ function QuickAddContent({ onPick }: { onPick: () => void }) {
       <div className="grid grid-cols-2 gap-2 mt-2">
         {quickAdd.map((q) => {
           const Icon = q.icon;
-          return (
-            <Link
-              key={q.label}
-              to={q.to}
-              onClick={onPick}
-              className="group flex items-start gap-3 p-3 rounded-lg border bg-card hover:border-primary hover:bg-primary/5 transition-colors"
-            >
+          const isNewJob = q.label === "New Job";
+          const inner = (
+            <>
               <div className="h-9 w-9 rounded-md bg-primary text-primary-foreground flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                 <Icon className="h-4 w-4" />
               </div>
@@ -666,10 +683,20 @@ function QuickAddContent({ onPick }: { onPick: () => void }) {
                 <div className="text-sm font-semibold">{q.label}</div>
                 <div className="text-[11px] text-muted-foreground leading-tight">{q.desc}</div>
               </div>
-            </Link>
+            </>
+          );
+          const cls = "group flex items-start gap-3 p-3 rounded-lg border bg-card hover:border-primary hover:bg-primary/5 transition-colors text-left";
+          if (isNewJob) {
+            return (
+              <button key={q.label} onClick={onNewJob} className={cls}>{inner}</button>
+            );
+          }
+          return (
+            <Link key={q.label} to={q.to} onClick={onPick} className={cls}>{inner}</Link>
           );
         })}
       </div>
     </DialogContent>
   );
 }
+

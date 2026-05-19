@@ -23,6 +23,8 @@ import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as BugsRouteImport } from './routes/bugs'
 import { Route as AccountsRouteImport } from './routes/accounts'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as JobsJobIdRouteImport } from './routes/jobs.$jobId'
+import { Route as CustomersCustomerIdRouteImport } from './routes/customers.$customerId'
 
 const UsersRoute = UsersRouteImport.update({
   id: '/users',
@@ -94,38 +96,52 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JobsJobIdRoute = JobsJobIdRouteImport.update({
+  id: '/$jobId',
+  path: '/$jobId',
+  getParentRoute: () => JobsRoute,
+} as any)
+const CustomersCustomerIdRoute = CustomersCustomerIdRouteImport.update({
+  id: '/$customerId',
+  path: '/$customerId',
+  getParentRoute: () => CustomersRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/bugs': typeof BugsRoute
   '/calendar': typeof CalendarRoute
-  '/customers': typeof CustomersRoute
+  '/customers': typeof CustomersRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
   '/invoicing': typeof InvoicingRoute
-  '/jobs': typeof JobsRoute
+  '/jobs': typeof JobsRouteWithChildren
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
   '/targets': typeof TargetsRoute
   '/tasks': typeof TasksRoute
   '/users': typeof UsersRoute
+  '/customers/$customerId': typeof CustomersCustomerIdRoute
+  '/jobs/$jobId': typeof JobsJobIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/bugs': typeof BugsRoute
   '/calendar': typeof CalendarRoute
-  '/customers': typeof CustomersRoute
+  '/customers': typeof CustomersRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
   '/invoicing': typeof InvoicingRoute
-  '/jobs': typeof JobsRoute
+  '/jobs': typeof JobsRouteWithChildren
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
   '/targets': typeof TargetsRoute
   '/tasks': typeof TasksRoute
   '/users': typeof UsersRoute
+  '/customers/$customerId': typeof CustomersCustomerIdRoute
+  '/jobs/$jobId': typeof JobsJobIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -133,16 +149,18 @@ export interface FileRoutesById {
   '/accounts': typeof AccountsRoute
   '/bugs': typeof BugsRoute
   '/calendar': typeof CalendarRoute
-  '/customers': typeof CustomersRoute
+  '/customers': typeof CustomersRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
   '/invoicing': typeof InvoicingRoute
-  '/jobs': typeof JobsRoute
+  '/jobs': typeof JobsRouteWithChildren
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
   '/targets': typeof TargetsRoute
   '/tasks': typeof TasksRoute
   '/users': typeof UsersRoute
+  '/customers/$customerId': typeof CustomersCustomerIdRoute
+  '/jobs/$jobId': typeof JobsJobIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,6 +179,8 @@ export interface FileRouteTypes {
     | '/targets'
     | '/tasks'
     | '/users'
+    | '/customers/$customerId'
+    | '/jobs/$jobId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -177,6 +197,8 @@ export interface FileRouteTypes {
     | '/targets'
     | '/tasks'
     | '/users'
+    | '/customers/$customerId'
+    | '/jobs/$jobId'
   id:
     | '__root__'
     | '/'
@@ -193,6 +215,8 @@ export interface FileRouteTypes {
     | '/targets'
     | '/tasks'
     | '/users'
+    | '/customers/$customerId'
+    | '/jobs/$jobId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -200,11 +224,11 @@ export interface RootRouteChildren {
   AccountsRoute: typeof AccountsRoute
   BugsRoute: typeof BugsRoute
   CalendarRoute: typeof CalendarRoute
-  CustomersRoute: typeof CustomersRoute
+  CustomersRoute: typeof CustomersRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   FinanceRoute: typeof FinanceRoute
   InvoicingRoute: typeof InvoicingRoute
-  JobsRoute: typeof JobsRoute
+  JobsRoute: typeof JobsRouteWithChildren
   MarketingRoute: typeof MarketingRoute
   QuotesRoute: typeof QuotesRoute
   TargetsRoute: typeof TargetsRoute
@@ -312,19 +336,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/jobs/$jobId': {
+      id: '/jobs/$jobId'
+      path: '/$jobId'
+      fullPath: '/jobs/$jobId'
+      preLoaderRoute: typeof JobsJobIdRouteImport
+      parentRoute: typeof JobsRoute
+    }
+    '/customers/$customerId': {
+      id: '/customers/$customerId'
+      path: '/$customerId'
+      fullPath: '/customers/$customerId'
+      preLoaderRoute: typeof CustomersCustomerIdRouteImport
+      parentRoute: typeof CustomersRoute
+    }
   }
 }
+
+interface CustomersRouteChildren {
+  CustomersCustomerIdRoute: typeof CustomersCustomerIdRoute
+}
+
+const CustomersRouteChildren: CustomersRouteChildren = {
+  CustomersCustomerIdRoute: CustomersCustomerIdRoute,
+}
+
+const CustomersRouteWithChildren = CustomersRoute._addFileChildren(
+  CustomersRouteChildren,
+)
+
+interface JobsRouteChildren {
+  JobsJobIdRoute: typeof JobsJobIdRoute
+}
+
+const JobsRouteChildren: JobsRouteChildren = {
+  JobsJobIdRoute: JobsJobIdRoute,
+}
+
+const JobsRouteWithChildren = JobsRoute._addFileChildren(JobsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountsRoute: AccountsRoute,
   BugsRoute: BugsRoute,
   CalendarRoute: CalendarRoute,
-  CustomersRoute: CustomersRoute,
+  CustomersRoute: CustomersRouteWithChildren,
   DashboardRoute: DashboardRoute,
   FinanceRoute: FinanceRoute,
   InvoicingRoute: InvoicingRoute,
-  JobsRoute: JobsRoute,
+  JobsRoute: JobsRouteWithChildren,
   MarketingRoute: MarketingRoute,
   QuotesRoute: QuotesRoute,
   TargetsRoute: TargetsRoute,
