@@ -26,122 +26,58 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as JobsJobIdRouteImport } from './routes/jobs.$jobId'
 import { Route as CustomersCustomerIdRouteImport } from './routes/customers.$customerId'
 
-const UsersRoute = UsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TasksRoute = TasksRouteImport.update({
-  id: '/tasks',
-  path: '/tasks',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TargetsRoute = TargetsRouteImport.update({
-  id: '/targets',
-  path: '/targets',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QuotesRoute = QuotesRouteImport.update({
-  id: '/quotes',
-  path: '/quotes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MarketingRoute = MarketingRouteImport.update({
-  id: '/marketing',
-  path: '/marketing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JobsRoute = JobsRouteImport.update({
-  id: '/jobs',
-  path: '/jobs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InvoicingRoute = InvoicingRouteImport.update({
-  id: '/invoicing',
-  path: '/invoicing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FinanceRoute = FinanceRouteImport.update({
-  id: '/finance',
-  path: '/finance',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CustomersRoute = CustomersRouteImport.update({
-  id: '/customers',
-  path: '/customers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CalendarRoute = CalendarRouteImport.update({
-  id: '/calendar',
-  path: '/calendar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BugsRoute = BugsRouteImport.update({
-  id: '/bugs',
-  path: '/bugs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AccountsRoute = AccountsRouteImport.update({
-  id: '/accounts',
-  path: '/accounts',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JobsJobIdRoute = JobsJobIdRouteImport.update({
-  id: '/$jobId',
-  path: '/$jobId',
-  getParentRoute: () => JobsRoute,
-} as any)
-const CustomersCustomerIdRoute = CustomersCustomerIdRouteImport.update({
-  id: '/$customerId',
-  path: '/$customerId',
-  getParentRoute: () => CustomersRoute,
-} as any)
+const UsersRoute = UsersRouteImport.update({ id: '/users', path: '/users', getParentRoute: () => rootRouteImport } as any)
+const TasksRoute = TasksRouteImport.update({ id: '/tasks', path: '/tasks', getParentRoute: () => rootRouteImport } as any)
+const TargetsRoute = TargetsRouteImport.update({ id: '/targets', path: '/targets', getParentRoute: () => rootRouteImport } as any)
+const QuotesRoute = QuotesRouteImport.update({ id: '/quotes', path: '/quotes', getParentRoute: () => rootRouteImport } as any)
+const MarketingRoute = MarketingRouteImport.update({ id: '/marketing', path: '/marketing', getParentRoute: () => rootRouteImport } as any)
+const JobsRoute = JobsRouteImport.update({ id: '/jobs', path: '/jobs', getParentRoute: () => rootRouteImport } as any)
+const InvoicingRoute = InvoicingRouteImport.update({ id: '/invoicing', path: '/invoicing', getParentRoute: () => rootRouteImport } as any)
+const FinanceRoute = FinanceRouteImport.update({ id: '/finance', path: '/finance', getParentRoute: () => rootRouteImport } as any)
+const DashboardRoute = DashboardRouteImport.update({ id: '/dashboard', path: '/dashboard', getParentRoute: () => rootRouteImport } as any)
+const CustomersRoute = CustomersRouteImport.update({ id: '/customers', path: '/customers', getParentRoute: () => rootRouteImport } as any)
+const CalendarRoute = CalendarRouteImport.update({ id: '/calendar', path: '/calendar', getParentRoute: () => rootRouteImport } as any)
+const BugsRoute = BugsRouteImport.update({ id: '/bugs', path: '/bugs', getParentRoute: () => rootRouteImport } as any)
+const AccountsRoute = AccountsRouteImport.update({ id: '/accounts', path: '/accounts', getParentRoute: () => rootRouteImport } as any)
+const IndexRoute = IndexRouteImport.update({ id: '/', path: '/', getParentRoute: () => rootRouteImport } as any)
+const JobsJobIdRoute = JobsJobIdRouteImport.update({ id: '/jobs/$jobId', path: '/jobs/$jobId', getParentRoute: () => rootRouteImport } as any)
+const CustomersCustomerIdRoute = CustomersCustomerIdRouteImport.update({ id: '/customers/$customerId', path: '/customers/$customerId', getParentRoute: () => rootRouteImport } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/bugs': typeof BugsRoute
   '/calendar': typeof CalendarRoute
-  '/customers': typeof CustomersRouteWithChildren
+  '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
   '/invoicing': typeof InvoicingRoute
-  '/jobs': typeof JobsRouteWithChildren
+  '/jobs': typeof JobsRoute
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
   '/targets': typeof TargetsRoute
   '/tasks': typeof TasksRoute
   '/users': typeof UsersRoute
-  '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/jobs/$jobId': typeof JobsJobIdRoute
+  '/customers/$customerId': typeof CustomersCustomerIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accounts': typeof AccountsRoute
   '/bugs': typeof BugsRoute
   '/calendar': typeof CalendarRoute
-  '/customers': typeof CustomersRouteWithChildren
+  '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
   '/invoicing': typeof InvoicingRoute
-  '/jobs': typeof JobsRouteWithChildren
+  '/jobs': typeof JobsRoute
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
   '/targets': typeof TargetsRoute
   '/tasks': typeof TasksRoute
   '/users': typeof UsersRoute
-  '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/jobs/$jobId': typeof JobsJobIdRoute
+  '/customers/$customerId': typeof CustomersCustomerIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -149,18 +85,18 @@ export interface FileRoutesById {
   '/accounts': typeof AccountsRoute
   '/bugs': typeof BugsRoute
   '/calendar': typeof CalendarRoute
-  '/customers': typeof CustomersRouteWithChildren
+  '/customers': typeof CustomersRoute
   '/dashboard': typeof DashboardRoute
   '/finance': typeof FinanceRoute
   '/invoicing': typeof InvoicingRoute
-  '/jobs': typeof JobsRouteWithChildren
+  '/jobs': typeof JobsRoute
   '/marketing': typeof MarketingRoute
   '/quotes': typeof QuotesRoute
   '/targets': typeof TargetsRoute
   '/tasks': typeof TasksRoute
   '/users': typeof UsersRoute
-  '/customers/$customerId': typeof CustomersCustomerIdRoute
   '/jobs/$jobId': typeof JobsJobIdRoute
+  '/customers/$customerId': typeof CustomersCustomerIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -179,8 +115,8 @@ export interface FileRouteTypes {
     | '/targets'
     | '/tasks'
     | '/users'
-    | '/customers/$customerId'
     | '/jobs/$jobId'
+    | '/customers/$customerId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -197,8 +133,8 @@ export interface FileRouteTypes {
     | '/targets'
     | '/tasks'
     | '/users'
-    | '/customers/$customerId'
     | '/jobs/$jobId'
+    | '/customers/$customerId'
   id:
     | '__root__'
     | '/'
@@ -215,8 +151,8 @@ export interface FileRouteTypes {
     | '/targets'
     | '/tasks'
     | '/users'
-    | '/customers/$customerId'
     | '/jobs/$jobId'
+    | '/customers/$customerId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -224,172 +160,58 @@ export interface RootRouteChildren {
   AccountsRoute: typeof AccountsRoute
   BugsRoute: typeof BugsRoute
   CalendarRoute: typeof CalendarRoute
-  CustomersRoute: typeof CustomersRouteWithChildren
+  CustomersRoute: typeof CustomersRoute
   DashboardRoute: typeof DashboardRoute
   FinanceRoute: typeof FinanceRoute
   InvoicingRoute: typeof InvoicingRoute
-  JobsRoute: typeof JobsRouteWithChildren
+  JobsRoute: typeof JobsRoute
   MarketingRoute: typeof MarketingRoute
   QuotesRoute: typeof QuotesRoute
   TargetsRoute: typeof TargetsRoute
   TasksRoute: typeof TasksRoute
   UsersRoute: typeof UsersRoute
+  JobsJobIdRoute: typeof JobsJobIdRoute
+  CustomersCustomerIdRoute: typeof CustomersCustomerIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/users': {
-      id: '/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof UsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tasks': {
-      id: '/tasks'
-      path: '/tasks'
-      fullPath: '/tasks'
-      preLoaderRoute: typeof TasksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/targets': {
-      id: '/targets'
-      path: '/targets'
-      fullPath: '/targets'
-      preLoaderRoute: typeof TargetsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/quotes': {
-      id: '/quotes'
-      path: '/quotes'
-      fullPath: '/quotes'
-      preLoaderRoute: typeof QuotesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/marketing': {
-      id: '/marketing'
-      path: '/marketing'
-      fullPath: '/marketing'
-      preLoaderRoute: typeof MarketingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/jobs': {
-      id: '/jobs'
-      path: '/jobs'
-      fullPath: '/jobs'
-      preLoaderRoute: typeof JobsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/invoicing': {
-      id: '/invoicing'
-      path: '/invoicing'
-      fullPath: '/invoicing'
-      preLoaderRoute: typeof InvoicingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/finance': {
-      id: '/finance'
-      path: '/finance'
-      fullPath: '/finance'
-      preLoaderRoute: typeof FinanceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/customers': {
-      id: '/customers'
-      path: '/customers'
-      fullPath: '/customers'
-      preLoaderRoute: typeof CustomersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/calendar': {
-      id: '/calendar'
-      path: '/calendar'
-      fullPath: '/calendar'
-      preLoaderRoute: typeof CalendarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bugs': {
-      id: '/bugs'
-      path: '/bugs'
-      fullPath: '/bugs'
-      preLoaderRoute: typeof BugsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/accounts': {
-      id: '/accounts'
-      path: '/accounts'
-      fullPath: '/accounts'
-      preLoaderRoute: typeof AccountsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/jobs/$jobId': {
-      id: '/jobs/$jobId'
-      path: '/$jobId'
-      fullPath: '/jobs/$jobId'
-      preLoaderRoute: typeof JobsJobIdRouteImport
-      parentRoute: typeof JobsRoute
-    }
-    '/customers/$customerId': {
-      id: '/customers/$customerId'
-      path: '/$customerId'
-      fullPath: '/customers/$customerId'
-      preLoaderRoute: typeof CustomersCustomerIdRouteImport
-      parentRoute: typeof CustomersRoute
-    }
+    '/users': { id: '/users'; path: '/users'; fullPath: '/users'; preLoaderRoute: typeof UsersRouteImport; parentRoute: typeof rootRouteImport }
+    '/tasks': { id: '/tasks'; path: '/tasks'; fullPath: '/tasks'; preLoaderRoute: typeof TasksRouteImport; parentRoute: typeof rootRouteImport }
+    '/targets': { id: '/targets'; path: '/targets'; fullPath: '/targets'; preLoaderRoute: typeof TargetsRouteImport; parentRoute: typeof rootRouteImport }
+    '/quotes': { id: '/quotes'; path: '/quotes'; fullPath: '/quotes'; preLoaderRoute: typeof QuotesRouteImport; parentRoute: typeof rootRouteImport }
+    '/marketing': { id: '/marketing'; path: '/marketing'; fullPath: '/marketing'; preLoaderRoute: typeof MarketingRouteImport; parentRoute: typeof rootRouteImport }
+    '/jobs': { id: '/jobs'; path: '/jobs'; fullPath: '/jobs'; preLoaderRoute: typeof JobsRouteImport; parentRoute: typeof rootRouteImport }
+    '/invoicing': { id: '/invoicing'; path: '/invoicing'; fullPath: '/invoicing'; preLoaderRoute: typeof InvoicingRouteImport; parentRoute: typeof rootRouteImport }
+    '/finance': { id: '/finance'; path: '/finance'; fullPath: '/finance'; preLoaderRoute: typeof FinanceRouteImport; parentRoute: typeof rootRouteImport }
+    '/dashboard': { id: '/dashboard'; path: '/dashboard'; fullPath: '/dashboard'; preLoaderRoute: typeof DashboardRouteImport; parentRoute: typeof rootRouteImport }
+    '/customers': { id: '/customers'; path: '/customers'; fullPath: '/customers'; preLoaderRoute: typeof CustomersRouteImport; parentRoute: typeof rootRouteImport }
+    '/calendar': { id: '/calendar'; path: '/calendar'; fullPath: '/calendar'; preLoaderRoute: typeof CalendarRouteImport; parentRoute: typeof rootRouteImport }
+    '/bugs': { id: '/bugs'; path: '/bugs'; fullPath: '/bugs'; preLoaderRoute: typeof BugsRouteImport; parentRoute: typeof rootRouteImport }
+    '/accounts': { id: '/accounts'; path: '/accounts'; fullPath: '/accounts'; preLoaderRoute: typeof AccountsRouteImport; parentRoute: typeof rootRouteImport }
+    '/': { id: '/'; path: '/'; fullPath: '/'; preLoaderRoute: typeof IndexRouteImport; parentRoute: typeof rootRouteImport }
+    '/jobs/$jobId': { id: '/jobs/$jobId'; path: '/jobs/$jobId'; fullPath: '/jobs/$jobId'; preLoaderRoute: typeof JobsJobIdRouteImport; parentRoute: typeof rootRouteImport }
+    '/customers/$customerId': { id: '/customers/$customerId'; path: '/customers/$customerId'; fullPath: '/customers/$customerId'; preLoaderRoute: typeof CustomersCustomerIdRouteImport; parentRoute: typeof rootRouteImport }
   }
 }
-
-interface CustomersRouteChildren {
-  CustomersCustomerIdRoute: typeof CustomersCustomerIdRoute
-}
-
-const CustomersRouteChildren: CustomersRouteChildren = {
-  CustomersCustomerIdRoute: CustomersCustomerIdRoute,
-}
-
-const CustomersRouteWithChildren = CustomersRoute._addFileChildren(
-  CustomersRouteChildren,
-)
-
-interface JobsRouteChildren {
-  JobsJobIdRoute: typeof JobsJobIdRoute
-}
-
-const JobsRouteChildren: JobsRouteChildren = {
-  JobsJobIdRoute: JobsJobIdRoute,
-}
-
-const JobsRouteWithChildren = JobsRoute._addFileChildren(JobsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountsRoute: AccountsRoute,
   BugsRoute: BugsRoute,
   CalendarRoute: CalendarRoute,
-  CustomersRoute: CustomersRouteWithChildren,
+  CustomersRoute: CustomersRoute,
   DashboardRoute: DashboardRoute,
   FinanceRoute: FinanceRoute,
   InvoicingRoute: InvoicingRoute,
-  JobsRoute: JobsRouteWithChildren,
+  JobsRoute: JobsRoute,
   MarketingRoute: MarketingRoute,
   QuotesRoute: QuotesRoute,
   TargetsRoute: TargetsRoute,
   TasksRoute: TasksRoute,
   UsersRoute: UsersRoute,
+  JobsJobIdRoute: JobsJobIdRoute,
+  CustomersCustomerIdRoute: CustomersCustomerIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
