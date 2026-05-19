@@ -28,6 +28,20 @@ function CalendarPage() {
   const [enabled, setEnabled] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(TYPES.map((t) => [t, true])),
   );
+  const openJob = useOpenJob();
+  const onItem = (it: CalendarItem) => {
+    if (it.type === "Meeting" || it.type === "Compliance") {
+      toast.info(it.title);
+      return;
+    }
+    const ok = openJob({
+      legacyJobId: it.legacyJobId,
+      customer: it.customer,
+      jobType: it.jobType,
+      docNumber: it.docNumber,
+    });
+    if (!ok) toast.info(`No linked Job for "${it.title}".`);
+  };
 
   const visible = items.filter((i) => enabled[i.type]);
 
