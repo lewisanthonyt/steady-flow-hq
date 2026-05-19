@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { gbp, statusColor, STATUS_ORDER, type JobStatus } from "@/lib/mock-data";
 import { useJobsStore, jobTotals } from "@/lib/jobs-store";
 import { NewJobDialog } from "@/components/NewJobDialog";
+import { JobLink } from "@/components/JobLink";
 
 export const Route = createFileRoute("/jobs")({
   head: () => ({

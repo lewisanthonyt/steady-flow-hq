@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { gbp, statusColor } from "@/lib/mock-data";
 import { useJobsStore, customerStats, jobTotals } from "@/lib/jobs-store";
 import { NewJobDialog } from "@/components/NewJobDialog";
+import { JobLink } from "@/components/JobLink";
 
 export const Route = createFileRoute("/customers/$customerId")({
   head: () => ({ meta: [{ title: "Customer — Steady Works HQ" }] }),
