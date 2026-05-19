@@ -241,6 +241,7 @@ function statusBadge(s: DocStatus) {
 }
 
 function InvoicingPage() {
+  const openJob = useOpenJob();
   const [docs, setDocs] = useState<DocRecord[]>(seed);
   const [tab, setTab] = useState("dashboard");
   const [query, setQuery] = useState("");
