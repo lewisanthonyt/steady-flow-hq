@@ -55,6 +55,13 @@ function JobWorkspacePage() {
         {/* Header */}
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
+            <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2" aria-label="Breadcrumb">
+              <Link to="/dashboard" className="hover:text-foreground">Dashboard</Link>
+              <span>/</span>
+              <Link to="/jobs" className="hover:text-foreground">Jobs</Link>
+              <span>/</span>
+              <span className="font-mono font-semibold text-foreground">{job.id}</span>
+            </nav>
             <Button variant="ghost" size="sm" className="-ml-2 mb-2 gap-1.5" onClick={() => navigate({ to: "/jobs" })}>
               <ArrowLeft className="h-3.5 w-3.5" /> All jobs
             </Button>
