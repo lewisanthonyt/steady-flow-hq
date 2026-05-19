@@ -235,7 +235,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             collapsed={collapsed}
             onToggleCollapse={() => setCollapsed(!collapsed)}
             currentPath={location.pathname}
-            recent={recent}
+            recent={mounted ? recent : []}
             onQuickAdd={() => setQuickOpen(true)}
           />
         </motion.aside>
