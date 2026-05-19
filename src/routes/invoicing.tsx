@@ -541,7 +541,7 @@ function InvoicingPage() {
                 const draft: DocRecord = {
                   id: crypto.randomUUID(),
                   type: "Quote",
-                  number: `QT-${Math.floor(Math.random() * 9000) + 1000}`,
+                  number: nextDocNumber(docs, "Quote"),
                   customer,
                   customerEmail: "",
                   customerAddress: "",
