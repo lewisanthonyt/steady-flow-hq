@@ -44,6 +44,7 @@ import {
   tasks,
   priorityColor,
 } from "@/lib/mock-data";
+import { useOpenJob } from "@/lib/job-links";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
