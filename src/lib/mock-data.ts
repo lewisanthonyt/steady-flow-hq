@@ -297,18 +297,7 @@ export function buildCalendarItems(): CalendarItem[] {
 }
 
 // ============ Marketing ============
-export type LeadSource =
-  | "Facebook Ads"
-  | "Google Ads"
-  | "Instagram"
-  | "Leaflets"
-  | "Referral"
-  | "Repeat Customer"
-  | "Organic"
-  | "Website"
-  | "Cold Outreach"
-  | "Local Directory"
-  | "Other";
+export type LeadSource = string;
 
 export type LeadStatus = "Pending" | "Won" | "Lost";
 

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -14,6 +14,10 @@ import {
   Plus,
   Trophy,
   Flame,
+  Trash2,
+  Settings2,
+  Home,
+  ArrowLeft,
 } from "lucide-react";
 import {
   AreaChart,
@@ -77,7 +81,7 @@ export const Route = createFileRoute("/marketing")({
   component: MarketingPage,
 });
 
-const ALL_SOURCES: LeadSource[] = [
+const DEFAULT_SOURCES: LeadSource[] = [
   "Facebook Ads",
   "Google Ads",
   "Instagram",
