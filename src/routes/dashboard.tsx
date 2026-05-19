@@ -103,6 +103,7 @@ function Kpi({
 }
 
 function DashboardPage() {
+  const openJob = useOpenJob();
   const thisMonth = monthlyRevenue[monthlyRevenue.length - 1];
   const profit = thisMonth.revenue - thisMonth.expenses;
   const targetPct = Math.min(100, Math.round((thisMonth.revenue / TARGET_MONTHLY) * 100));
