@@ -189,7 +189,6 @@ function TasksPage() {
             <WeekView items={filtered} onToggle={toggle} onOpen={open} />
           </TabsContent>
 
-          </TabsContent>
         </Tabs>
       </div>
     </AppShell>
