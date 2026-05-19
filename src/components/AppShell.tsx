@@ -168,33 +168,50 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [quickOpen, setQuickOpen] = useState(false);
+  const [newJobOpen, setNewJobOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [collapsed, setCollapsed] = useLocalStorage<boolean>(COLLAPSE_KEY, false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
-  // Track recent pages
+  // Global search uses the jobs store
+  const store = useJobsStore();
+  const searchResults = useMemo(() => globalSearch(store, searchQuery), [store, searchQuery]);
+
+  // Track recent pages (only after mount to avoid hydration mismatch)
   const [recent, setRecent] = useLocalStorage<string[]>(RECENT_KEY, []);
   useEffect(() => {
+    if (!mounted) return;
     const path = location.pathname;
     const item = allNavItems.find((i) => path === i.to || path.startsWith(i.to + "/"));
     if (!item) return;
     setRecent([item.to, ...recent.filter((r) => r !== item.to)].slice(0, 4));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname]);
+  }, [location.pathname, mounted]);
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const q = searchQuery.trim().toLowerCase();
     if (!q) return;
+    if (searchResults.jobs.length > 0) {
+      navigate({ to: "/jobs/$jobId", params: { jobId: searchResults.jobs[0].id } });
+      setSearchQuery(""); setSearchOpen(false);
+      return;
+    }
+    if (searchResults.customers.length > 0) {
+      navigate({ to: "/customers/$customerId", params: { customerId: searchResults.customers[0].id } });
+      setSearchQuery(""); setSearchOpen(false);
+      return;
+    }
     const hit = allNavItems.find((i) => i.label.toLowerCase().includes(q));
     if (hit) {
       navigate({ to: hit.to });
-      setSearchQuery("");
+      setSearchQuery(""); setSearchOpen(false);
       return;
     }
-    toast.info(`Searching for "${searchQuery}"…`, { description: "Try Customers or Jobs for full results." });
-    navigate({ to: "/customers" });
-    setSearchQuery("");
+    toast.info(`No matches for "${searchQuery}"`);
   };
 
   const sidebarWidth = collapsed ? "w-[72px]" : "w-64";
