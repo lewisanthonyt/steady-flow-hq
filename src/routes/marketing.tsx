@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -14,6 +14,10 @@ import {
   Plus,
   Trophy,
   Flame,
+  Trash2,
+  Settings2,
+  Home,
+  ArrowLeft,
 } from "lucide-react";
 import {
   AreaChart,
@@ -77,7 +81,7 @@ export const Route = createFileRoute("/marketing")({
   component: MarketingPage,
 });
 
-const ALL_SOURCES: LeadSource[] = [
+const DEFAULT_SOURCES: LeadSource[] = [
   "Facebook Ads",
   "Google Ads",
   "Instagram",
@@ -148,6 +152,14 @@ function MarketingPage() {
   const [leads] = useState<Lead[]>(seedLeads);
   const [sourceFilter, setSourceFilter] = useState<LeadSource | "all">("all");
   const [openAdd, setOpenAdd] = useState(false);
+  const [openManage, setOpenManage] = useState(false);
+  const [customSources, setCustomSources] = useState<LeadSource[]>([]);
+  const [newSourceName, setNewSourceName] = useState("");
+
+  const allSources = useMemo(() => {
+    const set = new Set([...DEFAULT_SOURCES, ...customSources]);
+    return Array.from(set);
+  }, [customSources]);
 
   // form
   const [fSource, setFSource] = useState<LeadSource>("Facebook Ads");
@@ -258,9 +270,45 @@ function MarketingPage() {
     setOpenAdd(false);
   };
 
+  const addSource = () => {
+    const name = newSourceName.trim();
+    if (!name) {
+      toast.error("Enter a source name.");
+      return;
+    }
+    if (allSources.includes(name)) {
+      toast.error("That source already exists.");
+      return;
+    }
+    setCustomSources(prev => [...prev, name]);
+    setNewSourceName("");
+    toast.success(`Added source: ${name}`);
+  };
+
+  const removeSource = (src: LeadSource) => {
+    const inUse = spend.some(s => s.source === src) || leads.some(l => l.source === src);
+    if (inUse) {
+      toast.error("Cannot remove a source that has spend or leads attached.");
+      return;
+    }
+    setCustomSources(prev => prev.filter(s => s !== src));
+    if (fSource === src) setFSource("Other");
+    if (sourceFilter === src) setSourceFilter("all");
+    toast.success(`Removed source: ${src}`);
+  };
+
   return (
     <AppShell>
     <div className="space-y-6">
+      {/* Nav */}
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Link to="/" className="flex items-center gap-1 hover:text-foreground transition-colors">
+          <Home className="h-3.5 w-3.5" /> Home
+        </Link>
+        <span>/</span>
+        <span className="text-foreground font-medium">Marketing</span>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
@@ -277,11 +325,51 @@ function MarketingPage() {
             <SelectTrigger className="w-44">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All sources</SelectItem>
-              {ALL_SOURCES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-            </SelectContent>
+              <SelectContent>
+                <SelectItem value="all">All sources</SelectItem>
+                {allSources.map((s: LeadSource) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              </SelectContent>
           </Select>
+          <Dialog open={openManage} onOpenChange={setOpenManage}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="gap-2"><Settings2 className="h-4 w-4" /> Sources</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>Manage Sources</DialogTitle>
+                <DialogDescription>Add or remove marketing channels.</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={newSourceName}
+                    onChange={(e) => setNewSourceName(e.target.value)}
+                    placeholder="New source name…"
+                    onKeyDown={(e) => { if (e.key === "Enter") addSource(); }}
+                  />
+                  <Button onClick={addSource} size="sm"><Plus className="h-4 w-4" /></Button>
+                </div>
+                <div className="space-y-1 max-h-72 overflow-y-auto">
+                  {allSources.map((src) => {
+                    const isDefault = DEFAULT_SOURCES.includes(src);
+                    return (
+                      <div key={src} className="flex items-center justify-between p-2 rounded-md border hover:bg-muted/40 transition-colors">
+                        <span className="text-sm font-medium">{src}</span>
+                        {!isDefault && (
+                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive" onClick={() => removeSource(src)}>
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setOpenManage(false)}>Close</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Dialog open={openAdd} onOpenChange={setOpenAdd}>
             <DialogTrigger asChild>
               <Button className="gap-2"><Plus className="h-4 w-4" /> Log Spend</Button>
@@ -296,9 +384,9 @@ function MarketingPage() {
                   <Label>Source / platform</Label>
                   <Select value={fSource} onValueChange={(v) => setFSource(v as LeadSource)}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {ALL_SOURCES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
-                    </SelectContent>
+                  <SelectContent>
+                    {allSources.map((s: LeadSource) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  </SelectContent>
                   </Select>
                 </div>
                 <div>
