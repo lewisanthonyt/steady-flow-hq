@@ -152,6 +152,14 @@ function MarketingPage() {
   const [leads] = useState<Lead[]>(seedLeads);
   const [sourceFilter, setSourceFilter] = useState<LeadSource | "all">("all");
   const [openAdd, setOpenAdd] = useState(false);
+  const [openManage, setOpenManage] = useState(false);
+  const [customSources, setCustomSources] = useState<LeadSource[]>([]);
+  const [newSourceName, setNewSourceName] = useState("");
+
+  const allSources = useMemo(() => {
+    const set = new Set([...DEFAULT_SOURCES, ...customSources]);
+    return Array.from(set);
+  }, [customSources]);
 
   // form
   const [fSource, setFSource] = useState<LeadSource>("Facebook Ads");
