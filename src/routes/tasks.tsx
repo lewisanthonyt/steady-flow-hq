@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { tasks as seed, TASK_STATUSES, type Task, priorityColor, taskStatusColor } from "@/lib/mock-data";
+import { useOpenJob } from "@/lib/job-links";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/tasks")({
