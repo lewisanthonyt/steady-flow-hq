@@ -663,7 +663,7 @@ function NavLeaf({
   return link;
 }
 
-function QuickAddContent({ onPick }: { onPick: () => void }) {
+function QuickAddContent({ onPick, onNewJob }: { onPick: () => void; onNewJob: () => void }) {
   return (
     <DialogContent className="max-w-lg">
       <DialogHeader>
@@ -673,13 +673,9 @@ function QuickAddContent({ onPick }: { onPick: () => void }) {
       <div className="grid grid-cols-2 gap-2 mt-2">
         {quickAdd.map((q) => {
           const Icon = q.icon;
-          return (
-            <Link
-              key={q.label}
-              to={q.to}
-              onClick={onPick}
-              className="group flex items-start gap-3 p-3 rounded-lg border bg-card hover:border-primary hover:bg-primary/5 transition-colors"
-            >
+          const isNewJob = q.label === "New Job";
+          const inner = (
+            <>
               <div className="h-9 w-9 rounded-md bg-primary text-primary-foreground flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
                 <Icon className="h-4 w-4" />
               </div>
@@ -687,10 +683,20 @@ function QuickAddContent({ onPick }: { onPick: () => void }) {
                 <div className="text-sm font-semibold">{q.label}</div>
                 <div className="text-[11px] text-muted-foreground leading-tight">{q.desc}</div>
               </div>
-            </Link>
+            </>
+          );
+          const cls = "group flex items-start gap-3 p-3 rounded-lg border bg-card hover:border-primary hover:bg-primary/5 transition-colors text-left";
+          if (isNewJob) {
+            return (
+              <button key={q.label} onClick={onNewJob} className={cls}>{inner}</button>
+            );
+          }
+          return (
+            <Link key={q.label} to={q.to} onClick={onPick} className={cls}>{inner}</Link>
           );
         })}
       </div>
     </DialogContent>
   );
 }
+
