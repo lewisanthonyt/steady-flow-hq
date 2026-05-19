@@ -270,6 +270,33 @@ function MarketingPage() {
     setOpenAdd(false);
   };
 
+  const addSource = () => {
+    const name = newSourceName.trim();
+    if (!name) {
+      toast.error("Enter a source name.");
+      return;
+    }
+    if (allSources.includes(name)) {
+      toast.error("That source already exists.");
+      return;
+    }
+    setCustomSources(prev => [...prev, name]);
+    setNewSourceName("");
+    toast.success(`Added source: ${name}`);
+  };
+
+  const removeSource = (src: LeadSource) => {
+    const inUse = spend.some(s => s.source === src) || leads.some(l => l.source === src);
+    if (inUse) {
+      toast.error("Cannot remove a source that has spend or leads attached.");
+      return;
+    }
+    setCustomSources(prev => prev.filter(s => s !== src));
+    if (fSource === src) setFSource("Other");
+    if (sourceFilter === src) setSourceFilter("all");
+    toast.success(`Removed source: ${src}`);
+  };
+
   return (
     <AppShell>
     <div className="space-y-6">
