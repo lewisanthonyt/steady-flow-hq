@@ -272,6 +272,11 @@ export interface CalendarItem {
   title: string;
   subtitle?: string;
   type: "Job" | "Task" | "Quote" | "Invoice" | "Meeting" | "Compliance";
+  /** Hints used by useOpenJob() to navigate to the related Job workspace */
+  legacyJobId?: string;
+  customer?: string;
+  jobType?: string;
+  docNumber?: string;
 }
 
 export function buildCalendarItems(): CalendarItem[] {
@@ -279,18 +284,22 @@ export function buildCalendarItems(): CalendarItem[] {
   jobs.forEach((j) => items.push({
     id: `cj-${j.id}`, date: j.date, time: j.time,
     title: `${j.jobType} — ${j.customer}`, subtitle: j.address, type: "Job",
+    legacyJobId: j.id, customer: j.customer, jobType: j.jobType,
   }));
   tasks.forEach((t) => items.push({
     id: `ct-${t.id}`, date: t.dueDate, time: t.dueTime,
     title: t.title, subtitle: t.assignedTo, type: "Task",
+    customer: t.relatedTo && !/^SW-/i.test(t.relatedTo) ? t.relatedTo : undefined,
+    docNumber: t.relatedTo && /^SW-/i.test(t.relatedTo) ? t.relatedTo : undefined,
   }));
   quotes.filter(q => q.status === "Sent" || q.status === "Draft").forEach((q) => items.push({
     id: `cq-${q.id}`, date: q.expiry,
     title: `Quote expires — ${q.number}`, subtitle: q.customer, type: "Quote",
+    customer: q.customer, docNumber: q.number,
   }));
   // Pretend invoices due soon
-  items.push({ id: "ci-1", date: iso(2), title: "Invoice INV-1029 due", subtitle: "James O'Connor — £180", type: "Invoice" });
-  items.push({ id: "ci-2", date: iso(5), title: "Invoice INV-1031 due", subtitle: "Margaret Thompson — £120", type: "Invoice" });
+  items.push({ id: "ci-1", date: iso(2), title: "Invoice INV-1029 due", subtitle: "James O'Connor — £180", type: "Invoice", customer: "James O'Connor", docNumber: "INV-1029" });
+  items.push({ id: "ci-2", date: iso(5), title: "Invoice INV-1031 due", subtitle: "Margaret Thompson — £120", type: "Invoice", customer: "Margaret Thompson", docNumber: "INV-1031" });
   items.push({ id: "cm-1", date: iso(((5 - today.getDay()) + 7) % 7 || 7), time: "16:00", title: "Staff meeting", subtitle: "Weekly catch-up", type: "Meeting" });
   items.push({ id: "cc-1", date: iso(7), title: "Public liability renewal", subtitle: "Compliance", type: "Compliance" });
   return items;

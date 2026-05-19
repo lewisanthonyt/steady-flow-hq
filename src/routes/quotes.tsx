@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Copy, FileText, Mail, Plus, Send } from "lucide-react";
+import { Copy, FileText, Mail, Plus, Send, ExternalLink } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { quotes, emailTemplates, gbp } from "@/lib/mock-data";
+import { useOpenJob } from "@/lib/job-links";
 
 export const Route = createFileRoute("/quotes")({
   head: () => ({
@@ -32,13 +33,14 @@ function quoteStatusColor(s: string) {
 }
 
 function QuotesPage() {
+  const openJob = useOpenJob();
   return (
     <AppShell>
       <div className="space-y-6 max-w-[1400px] mx-auto">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Quotes & Templates</h1>
-            <p className="text-muted-foreground mt-1">Send professional quotes and follow-ups in seconds.</p>
+            <p className="text-muted-foreground mt-1">Every quote opens its parent Job workspace.</p>
           </div>
         </div>
 
@@ -61,28 +63,45 @@ function QuotesPage() {
                       <th className="text-right p-3">Price</th>
                       <th className="text-left p-3">Expires</th>
                       <th className="text-left p-3">Status</th>
+                      <th className="p-3" />
                     </tr>
                   </thead>
                   <tbody>
-                    {quotes.map((q) => (
-                      <tr key={q.id} className="border-t hover:bg-muted/30">
-                        <td className="p-3 font-mono text-xs font-bold">{q.number}</td>
-                        <td className="p-3 font-medium">{q.customer}</td>
-                        <td className="p-3 text-muted-foreground max-w-md truncate">{q.work}</td>
-                        <td className="p-3 text-right font-bold tabular-nums">{gbp(q.price)}</td>
-                        <td className="p-3 text-muted-foreground tabular-nums">
-                          {new Date(q.expiry).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
-                        </td>
-                        <td className="p-3">
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${quoteStatusColor(q.status)}`}>{q.status}</span>
-                        </td>
-                      </tr>
-                    ))}
+                    {quotes.map((q) => {
+                      const open = () => {
+                        if (!openJob({ customer: q.customer, docNumber: q.number })) {
+                          toast.info(`No linked Job yet for ${q.number}`);
+                        }
+                      };
+                      return (
+                        <tr
+                          key={q.id}
+                          onClick={open}
+                          className="border-t hover:bg-muted/40 cursor-pointer transition-colors"
+                          title="Open linked Job workspace"
+                        >
+                          <td className="p-3 font-mono text-xs font-bold text-primary">{q.number}</td>
+                          <td className="p-3 font-medium">{q.customer}</td>
+                          <td className="p-3 text-muted-foreground max-w-md truncate">{q.work}</td>
+                          <td className="p-3 text-right font-bold tabular-nums">{gbp(q.price)}</td>
+                          <td className="p-3 text-muted-foreground tabular-nums">
+                            {new Date(q.expiry).toLocaleDateString("en-GB", { day: "2-digit", month: "short" })}
+                          </td>
+                          <td className="p-3">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${quoteStatusColor(q.status)}`}>{q.status}</span>
+                          </td>
+                          <td className="p-3 text-right">
+                            <ExternalLink className="h-3.5 w-3.5 text-muted-foreground inline-block" />
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
             </Card>
           </TabsContent>
+
 
           <TabsContent value="builder" className="mt-4">
             <QuoteBuilder />

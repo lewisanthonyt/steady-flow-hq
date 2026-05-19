@@ -44,6 +44,7 @@ import {
   tasks,
   priorityColor,
 } from "@/lib/mock-data";
+import { useOpenJob } from "@/lib/job-links";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -102,6 +103,7 @@ function Kpi({
 }
 
 function DashboardPage() {
+  const openJob = useOpenJob();
   const thisMonth = monthlyRevenue[monthlyRevenue.length - 1];
   const profit = thisMonth.revenue - thisMonth.expenses;
   const targetPct = Math.min(100, Math.round((thisMonth.revenue / TARGET_MONTHLY) * 100));
@@ -246,7 +248,12 @@ function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               {upcoming.map((j) => (
-                <div key={j.id} className="flex items-start justify-between gap-2 text-sm border-b last:border-0 pb-2 last:pb-0">
+                <button
+                  type="button"
+                  key={j.id}
+                  onClick={() => openJob({ legacyJobId: j.id, customer: j.customer, jobType: j.jobType })}
+                  className="w-full text-left flex items-start justify-between gap-2 text-sm border-b last:border-0 pb-2 last:pb-0 hover:bg-muted/40 rounded px-1 transition"
+                >
                   <div className="min-w-0">
                     <div className="font-medium truncate">{j.customer}</div>
                     <div className="text-xs text-muted-foreground truncate">{j.jobType}</div>
@@ -255,8 +262,9 @@ function DashboardPage() {
                     <div className="text-xs font-semibold">{new Date(j.date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</div>
                     <div className="text-[10px] text-muted-foreground">{j.time}</div>
                   </div>
-                </div>
+                </button>
               ))}
+
             </CardContent>
           </Card>
         </div>
@@ -269,7 +277,12 @@ function DashboardPage() {
           <CardContent>
             <div className="space-y-2">
               {jobs.slice(0, 6).map((j) => (
-                <div key={j.id} className="flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors">
+                <button
+                  type="button"
+                  key={j.id}
+                  onClick={() => openJob({ legacyJobId: j.id, customer: j.customer, jobType: j.jobType })}
+                  className="w-full text-left flex items-center justify-between p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                >
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="h-9 w-9 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">
                       {j.customer.split(" ").map((n) => n[0]).slice(0, 2).join("")}
@@ -283,7 +296,7 @@ function DashboardPage() {
                     <span className="text-sm font-semibold tabular-nums">{j.priceQuoted ? gbp(j.priceQuoted) : "—"}</span>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusColor(j.status)}`}>{j.status}</span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </CardContent>
