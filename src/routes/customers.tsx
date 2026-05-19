@@ -21,6 +21,7 @@ export const Route = createFileRoute("/customers")({
 
 function CustomersPage() {
   const navigate = useNavigate();
+  const openJob = useOpenJob();
   const [selectedId, setSelectedId] = useState(customers[0].id);
   const [query, setQuery] = useState("");
 
