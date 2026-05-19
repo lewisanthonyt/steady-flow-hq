@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import {
   ArrowLeft, Briefcase, Calendar as CalendarIcon, CheckCircle2, Clock, FileText,
   Image as ImageIcon, MapPin, MessageSquare, Paperclip, Phone, Plus, Receipt,
-  Send, Trash2, Upload, User as UserIcon, Wallet,
+  Send, Trash2, Upload, User as UserIcon, Wallet, Copy,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
