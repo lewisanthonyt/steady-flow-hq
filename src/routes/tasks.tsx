@@ -211,12 +211,12 @@ function StatCard({ label, value, icon: Icon, accent, danger }: { label: string;
   );
 }
 
-function TaskRow({ task, onToggle }: { task: Task; onToggle: (id: string) => void }) {
+function TaskRow({ task, onToggle, onOpen }: { task: Task; onToggle: (id: string) => void; onOpen: (t: Task) => void }) {
   const done = task.status === "Completed";
   return (
     <div className="flex items-start gap-3 px-4 py-3 hover:bg-muted/40 transition-colors">
       <Checkbox checked={done} onCheckedChange={() => onToggle(task.id)} className="mt-0.5" />
-      <div className="flex-1 min-w-0">
+      <button type="button" onClick={() => onOpen(task)} className="flex-1 min-w-0 text-left">
         <div className="flex items-center gap-2 flex-wrap">
           <p className={cn("text-sm font-medium", done && "line-through text-muted-foreground")}>{task.title}</p>
           <span className={cn("text-[10px] px-1.5 py-0.5 rounded font-bold", priorityColor(task.priority))}>{task.priority}</span>
@@ -225,15 +225,15 @@ function TaskRow({ task, onToggle }: { task: Task; onToggle: (id: string) => voi
         <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
           <span className="flex items-center gap-1"><User className="h-3 w-3" /> {task.assignedTo}</span>
           <span className="flex items-center gap-1"><CalendarDays className="h-3 w-3" /> {new Date(task.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}{task.dueTime ? ` · ${task.dueTime}` : ""}</span>
-          {task.relatedTo && <span>· {task.relatedTo}</span>}
+          {task.relatedTo && <span className="text-primary font-semibold">→ {task.relatedTo}</span>}
           {task.repeat && task.repeat !== "None" && <span className="flex items-center gap-1"><Repeat className="h-3 w-3" /> {task.repeat}</span>}
         </div>
-      </div>
+      </button>
     </div>
   );
 }
 
-function PlannerColumn({ title, items, onToggle, tone }: { title: string; items: Task[]; onToggle: (id: string) => void; tone?: "accent" | "danger" }) {
+function PlannerColumn({ title, items, onToggle, onOpen, tone }: { title: string; items: Task[]; onToggle: (id: string) => void; onOpen: (t: Task) => void; tone?: "accent" | "danger" }) {
   return (
     <Card className={cn(tone === "accent" && "border-primary/40", tone === "danger" && items.length > 0 && "border-destructive/40")}>
       <CardHeader className="pb-2">
@@ -245,18 +245,18 @@ function PlannerColumn({ title, items, onToggle, tone }: { title: string; items:
       <CardContent className="space-y-2">
         {items.length === 0 && <p className="text-xs text-muted-foreground py-6 text-center">Nothing here. Nice.</p>}
         {items.map((t) => (
-          <div key={t.id} className="flex items-start gap-2 p-2 rounded-md border bg-card">
+          <div key={t.id} className="flex items-start gap-2 p-2 rounded-md border bg-card hover:border-primary/40 transition">
             <button onClick={() => onToggle(t.id)} className="mt-0.5 text-muted-foreground hover:text-primary">
               <Circle className="h-4 w-4" />
             </button>
-            <div className="flex-1 min-w-0">
+            <button type="button" onClick={() => onOpen(t)} className="flex-1 min-w-0 text-left">
               <p className="text-sm font-medium leading-tight">{t.title}</p>
               <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
                 <span>{t.assignedTo}</span>
                 {t.dueTime && <span>· {t.dueTime}</span>}
                 <span className={cn("ml-auto px-1.5 py-0.5 rounded font-bold", priorityColor(t.priority))}>{t.priority}</span>
               </div>
-            </div>
+            </button>
           </div>
         ))}
       </CardContent>
@@ -264,7 +264,7 @@ function PlannerColumn({ title, items, onToggle, tone }: { title: string; items:
   );
 }
 
-function WeekView({ items, onToggle }: { items: Task[]; onToggle: (id: string) => void }) {
+function WeekView({ items, onToggle: _onToggle, onOpen }: { items: Task[]; onToggle: (id: string) => void; onOpen: (t: Task) => void }) {
   const start = new Date();
   start.setDate(start.getDate() - start.getDay() + 1); // Monday
   const days = Array.from({ length: 7 }).map((_, i) => {
@@ -288,7 +288,7 @@ function WeekView({ items, onToggle }: { items: Task[]; onToggle: (id: string) =
             <CardContent className="space-y-1.5">
               {list.length === 0 && <p className="text-[11px] text-muted-foreground">—</p>}
               {list.map((t) => (
-                <button key={t.id} onClick={() => onToggle(t.id)} className="w-full text-left text-[11px] p-1.5 rounded border bg-card hover:bg-muted/50">
+                <button key={t.id} onClick={() => onOpen(t)} className="w-full text-left text-[11px] p-1.5 rounded border bg-card hover:bg-muted/50 hover:border-primary/40 transition">
                   <div className="font-medium leading-tight">{t.title}</div>
                   {t.dueTime && <div className="text-muted-foreground mt-0.5">{t.dueTime}</div>}
                 </button>
